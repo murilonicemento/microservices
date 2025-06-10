@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microservices.Core.Services;
+using Microservices.Core.ServicesContracts;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Microservices.Core;
 
@@ -11,6 +13,8 @@ public static class DependencyInjection
     /// <returns></returns>
     public static IServiceCollection AddCore(this IServiceCollection services)
     {
+        services.AddTransient<IUserService, UserService>();
+
         return services;
     }
 }
