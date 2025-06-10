@@ -1,6 +1,6 @@
 ﻿using Microservices.Core.Entities;
 
-namespace Microservices.Core.RepositoryContracts;
+namespace Microservices.Core.RepositoriesContracts;
 
 /// <summary>
 /// Contract to be implemented by UserRepository that contains data access logic of Users data store

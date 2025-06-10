@@ -1,6 +1,6 @@
 ﻿using Microservices.Core.DTO;
 using Microservices.Core.Entities;
-using Microservices.Core.RepositoryContracts;
+using Microservices.Core.RepositoriesContracts;
 
 namespace Microservices.Infrastructure.Repositories;
 

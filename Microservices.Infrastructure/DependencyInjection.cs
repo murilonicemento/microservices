@@ -1,4 +1,4 @@
-﻿using Microservices.Core.RepositoryContracts;
+﻿using Microservices.Core.RepositoriesContracts;
 using Microservices.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
