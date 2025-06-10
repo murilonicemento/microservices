@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microservices.Core.RepositoryContracts;
+using Microservices.Infrastructure.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Microservices.Infrastructure;
 
@@ -11,6 +13,8 @@ public static class DependencyInjection
     /// <returns></returns>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
+        services.AddSingleton<IUserRepository, UserRepository>();
+
         return services;
     }
 }
