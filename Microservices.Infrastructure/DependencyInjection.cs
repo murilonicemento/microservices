@@ -1,4 +1,5 @@
 ﻿using Microservices.Core.RepositoriesContracts;
+using Microservices.Infrastructure.DbContext;
 using Microservices.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +14,8 @@ public static class DependencyInjection
     /// <returns></returns>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
-        services.AddSingleton<IUserRepository, UserRepository>();
+        services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<DapperDbContext>();
 
         return services;
     }
