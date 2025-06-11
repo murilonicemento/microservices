@@ -18,6 +18,7 @@ public static class DependencyInjection
         services.AddTransient<IUserService, UserService>();
 
         services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
+        services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
 
         return services;
     }
