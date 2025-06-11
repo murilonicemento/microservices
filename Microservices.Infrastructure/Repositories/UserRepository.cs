@@ -1,4 +1,5 @@
-﻿using Microservices.Core.DTO;
+﻿using Dapper;
+using Microservices.Core.DTO;
 using Microservices.Core.Entities;
 using Microservices.Core.RepositoriesContracts;
 using Microservices.Infrastructure.DbContext;
@@ -18,18 +19,20 @@ internal class UserRepository : IUserRepository
     {
         user.UserId = Guid.NewGuid();
 
-        return user;
+        const string query =
+            "INSERT INTO \"Users\" (\"UserId\", \"Email\", \"PersonName\", \"Gender\", \"Password\") VALUES (@UserId, @Email, @PersonName, @Gender, @Password)";
+
+        var rowCountAffected = await _dbContext.DbConnection.ExecuteAsync(query, user);
+
+        return rowCountAffected > 0 ? user : null;
     }
 
     public async Task<ApplicationUser?> GetUserByEmailAndPassword(string? email, string? password)
     {
-        return new ApplicationUser
-        {
-            UserId = Guid.NewGuid(),
-            Email = email,
-            Password = password,
-            PersonName = "Person name",
-            Gender = nameof(GenderOptions.Male)
-        };
+        const string query =
+            "SELECT \"UserId\", \"Email\", \"PersonName\", \"Gender\", \"Password\" FROM \"Users\" WHERE \"Email\" = @Email AND \"Password\" = @Password";
+        var parameters = new { Email = email, Password = password };
+
+        return await _dbContext.DbConnection.QueryFirstOrDefaultAsync<ApplicationUser>(query, parameters);
     }
 }
