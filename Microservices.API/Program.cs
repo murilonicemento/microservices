@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using FluentValidation.AspNetCore;
 using Microservices.API.Middlewares;
 using Microservices.Core;
 using Microservices.Core.Mappers;
@@ -16,6 +17,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 builder.Services.AddAutoMapper(typeof(ApplicationUserMappingProfile).Assembly);
 builder.Services.AddAutoMapper(typeof(RegisterRequestMappingProfile).Assembly);
+
+builder.Services.AddFluentValidationAutoValidation();
 
 var app = builder.Build();
 

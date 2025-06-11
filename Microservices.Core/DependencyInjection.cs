@@ -1,5 +1,7 @@
-﻿using Microservices.Core.Services;
+﻿using FluentValidation;
+using Microservices.Core.Services;
 using Microservices.Core.ServicesContracts;
+using Microservices.Core.Validators;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Microservices.Core;
@@ -14,6 +16,8 @@ public static class DependencyInjection
     public static IServiceCollection AddCore(this IServiceCollection services)
     {
         services.AddTransient<IUserService, UserService>();
+
+        services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 
         return services;
     }
