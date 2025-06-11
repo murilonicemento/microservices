@@ -26,7 +26,7 @@ namespace Microservices.API.Controllers
             if (authenticationResponse is null || authenticationResponse.Success == false)
                 return BadRequest(authenticationResponse);
 
-            return Created();
+            return Ok(authenticationResponse);
         }
 
         [HttpPost("login")]
@@ -40,7 +40,7 @@ namespace Microservices.API.Controllers
             if (authenticationResponse is null || authenticationResponse.Success == false)
                 return Unauthorized(authenticationResponse);
 
-            return Ok();
+            return Ok(authenticationResponse);
         }
     }
 }

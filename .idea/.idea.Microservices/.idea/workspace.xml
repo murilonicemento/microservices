@@ -8,10 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1ddf7e0-70e7-463b-9c9a-fbfdc0850e02" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Microservices/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Microservices/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Microservices.API/Microservices.API.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Microservices.API/Microservices.API.csproj" afterDir="false" />
-    </list>
+    <list default="true" id="d1ddf7e0-70e7-463b-9c9a-fbfdc0850e02" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -115,7 +112,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1749518560651</updated>
-      <workItem from="1749518562363" duration="5435000" />
+      <workItem from="1749518562363" duration="5584000" />
     </task>
     <servers />
   </component>
