@@ -4,8 +4,9 @@ using FluentValidation.AspNetCore;
 using ProductService.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
-builder.Services.AddDataAccessLayer();
+builder.Services.AddDataAccessLayer(configuration);
 builder.Services.AddBusinessLogicLayer();
 
 builder.Services.AddControllers();
