@@ -10,7 +10,7 @@ public static class ProductApiEndpoints
 {
     public static IEndpointRouteBuilder MapProductApiEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/products", async (IProductService productService) =>
+        app.MapGet("/api/products", async ([FromServices] IProductService productService) =>
         {
             var products = await productService.GetProducts();
 
@@ -18,7 +18,7 @@ public static class ProductApiEndpoints
         });
 
         app.MapGet("/api/products/search/product-id/{productId:guid}",
-            async (IProductService productService, [FromRoute] Guid productId) =>
+            async ([FromServices] IProductService productService, [FromRoute] Guid productId) =>
             {
                 var product = await productService.GetProductByCondition(temp => temp.ProductId == productId);
 
@@ -26,7 +26,7 @@ public static class ProductApiEndpoints
             });
 
         app.MapGet("/api/products/search/{searchString}",
-            async (IProductService productService, [FromRoute] string searchString) =>
+            async ([FromServices] IProductService productService, [FromRoute] string searchString) =>
             {
                 var products =
                     await productService.GetProductsByCondition(temp => temp.ProductName.Contains(searchString));
@@ -35,7 +35,7 @@ public static class ProductApiEndpoints
             });
 
         app.MapPost("/api/products",
-            async (IProductService productService, IValidator<ProductAddRequest> productAddRequestValidator,
+            async ([FromServices] IProductService productService, [FromServices] IValidator<ProductAddRequest> productAddRequestValidator,
                 [FromBody] ProductAddRequest? productAddRequest) =>
             {
                 if (productAddRequest is null)
@@ -45,7 +45,7 @@ public static class ProductApiEndpoints
                 var errorMessages = GetErrorMessages(validationResult);
 
 
-                if (errorMessages.Values.Count > 0)
+                if (errorMessages.Count > 0)
                     return Results.ValidationProblem(errorMessages);
 
                 var product = await productService.AddProduct(productAddRequest);
@@ -56,7 +56,7 @@ public static class ProductApiEndpoints
             });
 
         app.MapPut("/api/products",
-            async (IProductService productService, IValidator<ProductUpdateRequest> productUpdateRequestValidator,
+            async ([FromServices] IProductService productService, [FromServices] IValidator<ProductUpdateRequest> productUpdateRequestValidator,
                 [FromBody] ProductUpdateRequest? productUpdateRequest) =>
             {
                 if (productUpdateRequest is null)
@@ -76,7 +76,7 @@ public static class ProductApiEndpoints
             });
 
         app.MapDelete("/api/products/{productId:guid}",
-            async (IProductService productService, [FromRoute] Guid productId) =>
+            async ([FromServices] IProductService productService, [FromRoute] Guid productId) =>
             {
                 var isDeleted = await productService.DeleteProduct(productId);
 

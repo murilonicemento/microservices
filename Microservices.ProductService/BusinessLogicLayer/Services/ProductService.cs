@@ -92,6 +92,8 @@ public class ProductService : IProductService
 
     private static void ValidateParameters(ValidationResult validationResult)
     {
+        if (validationResult.IsValid) return;
+
         var errorMessages = string.Join(" | ", validationResult.Errors.Select(temp => temp.ErrorMessage));
 
         throw new ArgumentException(errorMessages);

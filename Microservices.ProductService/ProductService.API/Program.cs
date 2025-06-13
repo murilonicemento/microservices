@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using BusinessLogicLayer;
 using DataAccessLayer;
 using FluentValidation.AspNetCore;
@@ -13,6 +14,11 @@ builder.Services.AddBusinessLogicLayer();
 builder.Services.AddControllers();
 
 builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 var app = builder.Build();
 

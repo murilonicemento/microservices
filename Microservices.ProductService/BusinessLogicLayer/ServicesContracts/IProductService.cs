@@ -31,7 +31,7 @@ public interface IProductService
     /// </summary>
     /// <param name="productAddRequest">Product to insert</param>
     /// <returns>Product after inserting or null if unsuccessful</returns>
-    Task<ProductResponse?> AddProduct(ProductAddRequest productAddRequest);
+    public Task<ProductResponse?> AddProduct(ProductAddRequest productAddRequest);
 
 
     /// <summary>
@@ -39,7 +39,7 @@ public interface IProductService
     /// </summary>
     /// <param name="productUpdateRequest">Product data to update</param>
     /// <returns>Returns product object after successful update; otherwise null</returns>
-    Task<ProductResponse?> UpdateProduct(ProductUpdateRequest productUpdateRequest);
+    public Task<ProductResponse?> UpdateProduct(ProductUpdateRequest productUpdateRequest);
 
 
     /// <summary>
@@ -47,5 +47,5 @@ public interface IProductService
     /// </summary>
     /// <param name="productId">ProductID to search and delete</param>
     /// <returns>Returns true if the deletion is successful; otherwise false</returns>
-    Task<bool> DeleteProduct(Guid productId);
+    public Task<bool> DeleteProduct(Guid productId);
 }
