@@ -7,7 +7,9 @@
       "launchBrowser": true,
       "applicationUrl": "http://localhost:5082",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "MONGODB_HOST": "localhost",
+        "MONGODB_PORT": "27017"
       }
     },
     "https": {
@@ -16,7 +18,9 @@
       "launchBrowser": false,
       "applicationUrl": "https://localhost:7237;http://localhost:5082",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "MONGODB_HOST": "localhost",
+        "MONGODB_PORT": "27017"
       }
     }
   }
