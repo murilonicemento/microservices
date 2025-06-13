@@ -74,7 +74,7 @@ public class ProductService : IProductService
         if (productToUpdate is null)
             throw new ArgumentException("Invalid product ID");
 
-        var product = _mapper.Map<Product>(productToUpdate);
+        var product = _mapper.Map<Product>(productUpdateRequest);
         var updatedProduct = await _productRepository.UpdateProduct(product);
 
         return _mapper.Map<ProductResponse>(updatedProduct);
