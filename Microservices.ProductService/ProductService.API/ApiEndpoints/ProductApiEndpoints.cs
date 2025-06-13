@@ -43,7 +43,7 @@ public static class ProductApiEndpoints
                     return Results.BadRequest("Invalid registration data.");
 
                 var validationResult = await productAddRequestValidator.ValidateAsync(productAddRequest);
-                var errorMessages = ValidateParameters(validationResult);
+                var errorMessages = GetErrorMessages(validationResult);
 
 
                 if (errorMessages.Values.Count > 0)
@@ -64,7 +64,7 @@ public static class ProductApiEndpoints
                     return Results.BadRequest("Invalid update data.");
 
                 var validationResult = await productUpdateRequestValidator.ValidateAsync(productUpdateRequest);
-                var errorMessages = ValidateParameters(validationResult);
+                var errorMessages = GetErrorMessages(validationResult);
 
                 if (errorMessages.Values.Count > 0)
                     return Results.ValidationProblem(errorMessages);
@@ -87,7 +87,7 @@ public static class ProductApiEndpoints
         return app;
     }
 
-    private static Dictionary<string, string[]> ValidateParameters(ValidationResult validationResult)
+    private static Dictionary<string, string[]> GetErrorMessages(ValidationResult validationResult)
     {
         if (validationResult.IsValid) return new Dictionary<string, string[]>();
 
