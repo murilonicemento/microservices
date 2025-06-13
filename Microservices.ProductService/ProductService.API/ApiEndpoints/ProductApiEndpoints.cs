@@ -1,6 +1,5 @@
 ﻿using BusinessLogicLayer.DTO;
 using BusinessLogicLayer.ServicesContracts;
-using BusinessLogicLayer.Validators;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
