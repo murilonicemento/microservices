@@ -20,10 +20,17 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 app.UseExceptionHandlingMiddleware();
 app.UseRouting();
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
