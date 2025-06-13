@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using BusinessLogicLayer.DTO;
+using DataAccessLayer.Entities;
 
 namespace BusinessLogicLayer.ServicesContracts;
 
@@ -16,14 +17,14 @@ public interface IProductService
     /// </summary>
     /// <param name="condition">Expression that represents condition to check</param>
     /// <returns>Returns match products</returns>
-    public Task<List<ProductResponse?>> GetProductsByCondition(Expression<Func<ProductResponse, bool>> condition);
+    public Task<List<ProductResponse?>> GetProductsByCondition(Expression<Func<Product, bool>> condition);
 
     /// <summary>
     /// Retrieves a product matching with given condition
     /// </summary>
     /// <param name="condition">Expression that represents condition to check</param>
     /// <returns>Returns match product</returns>
-    public Task<ProductResponse?> GetProductByCondition(Expression<Func<ProductResponse, bool>> condition);
+    public Task<ProductResponse?> GetProductByCondition(Expression<Func<Product, bool>> condition);
 
     /// <summary>
     /// Adds (inserts) product into the table using products repository
