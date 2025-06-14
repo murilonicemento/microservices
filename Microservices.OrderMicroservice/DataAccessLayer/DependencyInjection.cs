@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DataAccessLayer.Repositories;
+using DataAccessLayer.RepositoriesContracts;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 
@@ -20,6 +22,7 @@ public static class DependencyInjection
 
             return client.GetDatabase("OrderDatabase");
         });
+        services.AddScoped<IOrderRepository, OrderRepository>();
 
         return services;
     }
