@@ -1,3 +1,8 @@
 ﻿namespace BusinessLogicLayer.DTO;
 
-public record OrderItemResponse();
+public record OrderItemResponse(Guid ProductId, decimal UnitPrice, int Quantity, decimal TotalPrice)
+{
+    public OrderItemResponse() : this(default, default, default, default)
+    {
+    }
+}

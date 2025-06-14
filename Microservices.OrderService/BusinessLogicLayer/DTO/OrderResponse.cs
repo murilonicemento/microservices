@@ -1,8 +1,13 @@
 ﻿namespace BusinessLogicLayer.DTO;
 
-public record OrderResponse(Guid UserId, DateTime OrderDate, List<OrderItemResponse> OrderItems)
+public record OrderResponse(
+    Guid OrderId,
+    Guid UserId,
+    decimal TotalBill,
+    DateTime OrderDate,
+    List<OrderItemResponse> OrderItems)
 {
-    public OrderResponse() : this(default, default, default)
+    public OrderResponse() : this(default, default, default, default, default)
     {
     }
 }
