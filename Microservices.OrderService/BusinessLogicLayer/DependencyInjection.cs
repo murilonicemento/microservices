@@ -1,4 +1,6 @@
 ﻿using BusinessLogicLayer.Mappers;
+using BusinessLogicLayer.Services;
+using BusinessLogicLayer.ServicesContracts;
 using BusinessLogicLayer.Validators;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +22,8 @@ public static class DependencyInjection
         services.AddAutoMapper(typeof(OrderItemUpdateRequestToOrderItemMappingProfile).Assembly);
         services.AddAutoMapper(typeof(OrderToOrderResponseMappingProfile).Assembly);
         services.AddAutoMapper(typeof(OrderUpdateRequestToOrderMappingProfile).Assembly);
+
+        services.AddScoped<IOrderService, OrderService>();
 
         return services;
     }
