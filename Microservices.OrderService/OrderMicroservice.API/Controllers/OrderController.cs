@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Threading.Channels;
 using BusinessLogicLayer.DTO;
 using BusinessLogicLayer.ServicesContracts;
 using DataAccessLayer.Entities;
@@ -48,7 +49,7 @@ namespace OrderMicroservice.API.Controllers
             return Ok(orders);
         }
 
-        [HttpGet("/search/date/{orderDate:datetime}")]
+        [HttpGet("/search/order-date/{orderDate:datetime}")]
         public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrderByDate(DateTime orderDate)
         {
             var filter = Builders<Order>.Filter.Eq(temp => temp.OrderDate.ToString("yyy-MM-dd"),
@@ -56,6 +57,55 @@ namespace OrderMicroservice.API.Controllers
             var orders = await _orderService.GetOrdersByCondition(filter);
 
             return Ok(orders);
+        }
+
+        [HttpGet("/search/user-id/{userId:guid}")]
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrderByUserId(Guid userId)
+        {
+            var filter = Builders<Order>.Filter.Eq(temp => temp.UserId, userId);
+            var orders = await _orderService.GetOrdersByCondition(filter);
+
+            return Ok(orders);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> AddOrder(OrderAddRequest? orderAddRequest)
+        {
+            if (orderAddRequest is null)
+                return BadRequest("Invalid order data");
+
+            var orderResponse = await _orderService.AddOrder(orderAddRequest);
+
+            return orderResponse is null
+                ? Problem("Error in adding product")
+                : Created($"api/Orders/search/order-id/{orderResponse?.OrderId}", orderResponse);
+        }
+
+        [HttpPut("{orderId:guid}")]
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> UpdateOrder(OrderUpdateRequest? orderUpdateRequest,
+            [FromRoute] Guid orderId)
+        {
+            if (orderUpdateRequest is null)
+                return BadRequest("Invalid order data");
+
+            var orderResponse = await _orderService.UpdateOrder(orderUpdateRequest);
+
+            return orderResponse is null
+                ? Problem("Error in updating product")
+                : Ok(orderResponse);
+        }
+
+        [HttpDelete("{orderId:guid}")]
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> DeleteOrder(Guid orderId)
+        {
+            if (orderId != Guid.Empty)
+                return BadRequest("Invalid order data");
+
+            var isDeleted = await _orderService.DeleteOrder(orderId);
+
+            return !isDeleted
+                ? Problem("Error in deleting product")
+                : Ok(true);
         }
     }
 }
