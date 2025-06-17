@@ -20,4 +20,11 @@ public interface IUserService
     /// <param name="loginRequest"></param>
     /// <returns></returns>
     public Task<AuthenticationResponse?> Login(LoginRequest loginRequest);
+
+    /// <summary>
+    /// Returns User DTO object based on the given UserId
+    /// </summary>
+    /// <param name="userId">UserId to search</param>
+    /// <returns>User DTO object based on the matching UserId</returns>
+    public Task<User?> GetUserByUserId(Guid userId);
 }

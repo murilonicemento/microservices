@@ -20,4 +20,9 @@ RUN dotnet publish "./Microservices.API.csproj" -c $BUILD_CONFIGURATION -o /app/
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV POSTGRES_HOST=localhost
+ENV POSTGRES_PASSWORD=admin
+ENV POSTGRES_DATABASE=microservices_users
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PORT=5433
 ENTRYPOINT ["dotnet", "Microservices.API.dll"]
