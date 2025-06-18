@@ -22,7 +22,7 @@ public static class ProductApiEndpoints
             {
                 var product = await productService.GetProductByCondition(temp => temp.ProductId == productId);
 
-                return Results.Ok(product);
+                return product is null ? Results.NotFound() : Results.Ok(product);
             });
 
         app.MapGet("/api/products/search/{searchString}",
@@ -35,7 +35,8 @@ public static class ProductApiEndpoints
             });
 
         app.MapPost("/api/products",
-            async ([FromServices] IProductService productService, [FromServices] IValidator<ProductAddRequest> productAddRequestValidator,
+            async ([FromServices] IProductService productService,
+                [FromServices] IValidator<ProductAddRequest> productAddRequestValidator,
                 [FromBody] ProductAddRequest? productAddRequest) =>
             {
                 if (productAddRequest is null)
@@ -56,7 +57,8 @@ public static class ProductApiEndpoints
             });
 
         app.MapPut("/api/products",
-            async ([FromServices] IProductService productService, [FromServices] IValidator<ProductUpdateRequest> productUpdateRequestValidator,
+            async ([FromServices] IProductService productService,
+                [FromServices] IValidator<ProductUpdateRequest> productUpdateRequestValidator,
                 [FromBody] ProductUpdateRequest? productUpdateRequest) =>
             {
                 if (productUpdateRequest is null)
