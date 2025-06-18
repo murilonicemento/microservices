@@ -1,0 +1,10 @@
+﻿services:
+  microservices.api:
+    image: users-microservices.api
+    build:
+      context: .
+      dockerfile: Microservices.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - 
+

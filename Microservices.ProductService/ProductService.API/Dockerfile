@@ -8,6 +8,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["ProductService.API/ProductService.API.csproj", "ProductService.API/"]
+COPY ["BusinessLogicLayer/BusinessLogicLayer.csproj", "BusinessLogicLayer/"]
+COPY ["DataAccessLayer/DataAccessLayer.csproj", "DataAccessLayer/"]
 RUN dotnet restore "ProductService.API/ProductService.API.csproj"
 COPY . .
 WORKDIR "/src/ProductService.API"

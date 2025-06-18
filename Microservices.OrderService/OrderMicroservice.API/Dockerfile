@@ -8,6 +8,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["OrderMicroservice.API/OrderMicroservice.API.csproj", "OrderMicroservice.API/"]
+COPY ["BusinessLogicLayer/BusinessLogicLayer.csproj", "BusinessLogicLayer/"]
+COPY ["DataAccessLayer/DataAccessLayer.csproj", "DataAccessLayer/"]
 RUN dotnet restore "OrderMicroservice.API/OrderMicroservice.API.csproj"
 COPY . .
 WORKDIR "/src/OrderMicroservice.API"
@@ -24,5 +26,5 @@ ENV MONGODB_HOST=localhost
 ENV MONGODB_PORT=27017
 ENV MONGODB_DATABASE=OrdersDatabase
 ENV UsersMicroserviceName=localhost
-ENV UsersMicroservicePort=5026
+ENV UsersMicroservicePort=9090
 ENTRYPOINT ["dotnet", "OrderMicroservice.API.dll"]

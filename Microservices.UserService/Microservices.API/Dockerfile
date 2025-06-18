@@ -8,6 +8,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Microservices.API/Microservices.API.csproj", "Microservices.API/"]
+COPY ["Microservices.Core/Microservices.Core.csproj", "Microservices.Core/"]
+COPY ["Microservices.Infrastructure/Microservices.Infrastructure.csproj", "Microservices.Infrastructure/"]
 RUN dotnet restore "Microservices.API/Microservices.API.csproj"
 COPY . .
 WORKDIR "/src/Microservices.API"
@@ -20,9 +22,4 @@ RUN dotnet publish "./Microservices.API.csproj" -c $BUILD_CONFIGURATION -o /app/
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENV POSTGRES_HOST=localhost
-ENV POSTGRES_PASSWORD=admin
-ENV POSTGRES_DATABASE=microservices_users
-ENV POSTGRES_USER=postgres
-ENV POSTGRES_PORT=5433
 ENTRYPOINT ["dotnet", "Microservices.API.dll"]
