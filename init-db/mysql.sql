@@ -1,8 +1,8 @@
 ﻿-- Create the database
 CREATE
-DATABASE IF NOT EXISTS ecommerceproductsdatabase;
-USE
-ecommerceproductsdatabase;
+DATABASE IF NOT EXISTS microservice_products;
+
+USE microservice_products;
 
 -- Create the products table
 CREATE TABLE IF NOT EXISTS Products
