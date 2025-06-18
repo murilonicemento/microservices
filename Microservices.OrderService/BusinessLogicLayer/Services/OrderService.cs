@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessLogicLayer.DTO;
+using BusinessLogicLayer.HttpClients;
 using BusinessLogicLayer.ServicesContracts;
 using DataAccessLayer.Entities;
 using DataAccessLayer.RepositoriesContracts;
@@ -17,6 +18,7 @@ public class OrderService : IOrderService
     private readonly IValidator<OrderItemAddRequest> _orderItemAddRequestValidator;
     private readonly IValidator<OrderUpdateRequest> _orderUpdateRequestValidator;
     private readonly IValidator<OrderItemUpdateRequest> _orderItemUpdateRequestValidator;
+    private readonly UserMicroserviceClient _userMicroserviceClient;
 
     public OrderService(
         IOrderRepository ordersRepository,
@@ -24,7 +26,8 @@ public class OrderService : IOrderService
         IValidator<OrderAddRequest> orderAddRequestValidator,
         IValidator<OrderItemAddRequest> orderItemAddRequestValidator,
         IValidator<OrderUpdateRequest> orderUpdateRequestValidator,
-        IValidator<OrderItemUpdateRequest> orderItemUpdateRequestValidator)
+        IValidator<OrderItemUpdateRequest> orderItemUpdateRequestValidator,
+        UserMicroserviceClient userMicroserviceClient)
     {
         _orderRepository = ordersRepository;
         _mapper = mapper;
@@ -32,6 +35,7 @@ public class OrderService : IOrderService
         _orderItemAddRequestValidator = orderItemAddRequestValidator;
         _orderUpdateRequestValidator = orderUpdateRequestValidator;
         _orderItemUpdateRequestValidator = orderItemUpdateRequestValidator;
+        _userMicroserviceClient = userMicroserviceClient;
     }
 
     public async Task<List<OrderResponse?>> GetOrders()
@@ -70,6 +74,11 @@ public class OrderService : IOrderService
             ValidateParameters(orderItemValidationResult);
         }
 
+        var user = await _userMicroserviceClient.GetUserByUserId(orderAddRequest.UserId);
+
+        if (user is null)
+            throw new ArgumentException("Invalid User Id.");
+
         var order = _mapper.Map<Order>(orderAddRequest);
 
         foreach (var orderItem in order.OrderItems)
@@ -99,6 +108,11 @@ public class OrderService : IOrderService
 
             ValidateParameters(orderItemValidationResult);
         }
+        
+        var user = await _userMicroserviceClient.GetUserByUserId(orderUpdateRequest.UserId);
+
+        if (user is null)
+            throw new ArgumentException("Invalid User Id.");
 
         var order = _mapper.Map<Order>(orderUpdateRequest);
 

@@ -10,17 +10,14 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddDataAccessLayer(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionStringTemplate = configuration.GetConnectionString("MongoDB")!;
-        var connectionString = connectionStringTemplate
-            .Replace("$MONGODB_HOST", Environment.GetEnvironmentVariable("MONGODB_HOST"))
-            .Replace("$MONGODB_PORT", Environment.GetEnvironmentVariable("MONGODB_PORT"));
+        var connectionString = configuration.GetConnectionString("MongoDB")!;
 
         services.AddSingleton<IMongoClient>(new MongoClient(connectionString));
         services.AddScoped<IMongoDatabase>(provider =>
         {
             var client = provider.GetRequiredService<IMongoClient>();
 
-            return client.GetDatabase("OrderDatabase");
+            return client.GetDatabase(Environment.GetEnvironmentVariable("MONGODB_DATABASE"));
         });
         services.AddScoped<IOrderRepository, OrderRepository>();
 
