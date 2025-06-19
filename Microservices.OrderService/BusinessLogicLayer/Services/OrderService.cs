@@ -228,6 +228,13 @@ public class OrderService : IOrderService
 
                 _mapper.Map<Product, OrderItemResponse>(product, orderItem);
             }
+
+            var user = await _userMicroserviceClient.GetUserByUserId(orderResponse.UserId);
+
+            if (user is null)
+                continue;
+
+            _mapper.Map<User, OrderResponse>(user, orderResponse);
         }
 
         return orderResponses;
