@@ -19,6 +19,7 @@ public class OrderService : IOrderService
     private readonly IValidator<OrderUpdateRequest> _orderUpdateRequestValidator;
     private readonly IValidator<OrderItemUpdateRequest> _orderItemUpdateRequestValidator;
     private readonly UserMicroserviceClient _userMicroserviceClient;
+    private readonly ProductMicroserviceClient _productMicroserviceClient;
 
     public OrderService(
         IOrderRepository ordersRepository,
@@ -27,7 +28,8 @@ public class OrderService : IOrderService
         IValidator<OrderItemAddRequest> orderItemAddRequestValidator,
         IValidator<OrderUpdateRequest> orderUpdateRequestValidator,
         IValidator<OrderItemUpdateRequest> orderItemUpdateRequestValidator,
-        UserMicroserviceClient userMicroserviceClient)
+        UserMicroserviceClient userMicroserviceClient,
+        ProductMicroserviceClient productMicroserviceClient)
     {
         _orderRepository = ordersRepository;
         _mapper = mapper;
@@ -36,6 +38,7 @@ public class OrderService : IOrderService
         _orderUpdateRequestValidator = orderUpdateRequestValidator;
         _orderItemUpdateRequestValidator = orderItemUpdateRequestValidator;
         _userMicroserviceClient = userMicroserviceClient;
+        _productMicroserviceClient = productMicroserviceClient;
     }
 
     public async Task<List<OrderResponse?>> GetOrders()
@@ -72,6 +75,11 @@ public class OrderService : IOrderService
             var orderItemValidationResult = await _orderItemAddRequestValidator.ValidateAsync(orderItemAddRequest);
 
             ValidateParameters(orderItemValidationResult);
+
+            var product = await _productMicroserviceClient.GetProductById(orderItemAddRequest.ProductId);
+
+            if (product is null)
+                throw new ArgumentException("Invalid Product ID.");
         }
 
         var user = await _userMicroserviceClient.GetUserByUserId(orderAddRequest.UserId);
@@ -108,7 +116,7 @@ public class OrderService : IOrderService
 
             ValidateParameters(orderItemValidationResult);
         }
-        
+
         var user = await _userMicroserviceClient.GetUserByUserId(orderUpdateRequest.UserId);
 
         if (user is null)

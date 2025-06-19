@@ -12,7 +12,9 @@
         "MONGODB_PORT": "27017",
         "MONGODB_DATABASE": "OrderDatabase",
         "UsersMicroserviceName": "localhost",
-        "UsersMicroservicePort": "5026"
+        "UsersMicroservicePort": "5026",
+        "ProductsMicroserviceName": "localhost",
+        "ProductsMicroservicePort": "5165"
       }
     },
     "https": {
