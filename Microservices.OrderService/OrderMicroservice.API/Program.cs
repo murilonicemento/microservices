@@ -1,5 +1,6 @@
 using BusinessLogicLayer;
 using BusinessLogicLayer.HttpClients;
+using BusinessLogicLayer.Policies;
 using DataAccessLayer;
 using FluentValidation.AspNetCore;
 using OrderMicroservice.API.Middlewares;
@@ -28,19 +29,18 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddTransient<IUsersMicroservicePolicies, UsersMicroservicePolice>();
+
+var usersMicroservicePolicy = builder.Services.BuildServiceProvider().GetRequiredService<IUsersMicroservicePolicies>()
+    .GetRetryPolice();
+
 builder.Services.AddHttpClient<UserMicroserviceClient>(client =>
     {
         client.BaseAddress =
             new Uri(
                 $"http://{builder.Configuration["UsersMicroserviceName"]}:{builder.Configuration["UsersMicroservicePort"]}");
     })
-    .AddPolicyHandler(Policy.HandleResult<HttpResponseMessage>(response => !response.IsSuccessStatusCode)
-        .WaitAndRetryAsync(
-            retryCount: 5,
-            sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(2),
-            onRetry: (outcome, timeSpan, retryAttempt, context) => { }
-        )
-    );
+    .AddPolicyHandler(usersMicroservicePolicy);
 
 builder.Services.AddHttpClient<ProductMicroserviceClient>(client =>
 {
