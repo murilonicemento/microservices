@@ -19,13 +19,19 @@ public class UserMicroserviceClient
 
         if (!response.IsSuccessStatusCode)
         {
-            return response.StatusCode switch
-            {
-                HttpStatusCode.NotFound => null,
-                HttpStatusCode.BadRequest => throw new HttpRequestException("Bad request", null,
-                    HttpStatusCode.BadRequest),
-                _ => throw new HttpRequestException("Request failed;")
-            };
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                return null;
+            if (response.StatusCode == HttpStatusCode.BadRequest)
+                throw new HttpRequestException("Bad request", null,
+                    HttpStatusCode.BadRequest);
+
+            return new User
+            (
+                PersonName: "Temporarily Unavailable.",
+                Email: "Temporarily Unavailable.",
+                Gender: "Temporarily Unavailable.",
+                UserId: Guid.Empty
+            );
         }
 
         var user = await response.Content.ReadFromJsonAsync<User>();
