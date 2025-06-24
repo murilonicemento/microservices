@@ -1,5 +1,6 @@
 using BusinessLogicLayer;
 using BusinessLogicLayer.HttpClients;
+using BusinessLogicLayer.Policies.Contracts;
 using BusinessLogicLayer.Policies;
 using DataAccessLayer;
 using FluentValidation.AspNetCore;
@@ -29,14 +30,20 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddTransient<IUsersMicroservicePolicies, UsersMicroservicePolice>();
+builder.Services.AddTransient<IUsersMicroservicePolicies, UsersMicroservicePolices>();
+builder.Services.AddTransient<IProductsMicroservicePolicies, ProductsMicroservicePolicies>();
 
-var usersMicroserviceRetryPolicy = builder.Services.BuildServiceProvider()
+var builderProvider = builder.Services.BuildServiceProvider();
+
+var usersMicroserviceRetryPolicy = builderProvider
     .GetRequiredService<IUsersMicroservicePolicies>()
     .GetRetryPolice();
-var usersMicroserviceCircuitBreakerPolicy = builder.Services.BuildServiceProvider()
+var usersMicroserviceCircuitBreakerPolicy = builderProvider
     .GetRequiredService<IUsersMicroservicePolicies>()
     .GetCircuitBreakerPolice();
+var productsMicroserviceFallbackPolicy = builderProvider
+    .GetRequiredService<IProductsMicroservicePolicies>()
+    .GetFallbackPolicy();
 
 builder.Services.AddHttpClient<UserMicroserviceClient>(client =>
     {
@@ -45,7 +52,8 @@ builder.Services.AddHttpClient<UserMicroserviceClient>(client =>
                 $"http://{builder.Configuration["UsersMicroserviceName"]}:{builder.Configuration["UsersMicroservicePort"]}");
     })
     .AddPolicyHandler(usersMicroserviceRetryPolicy)
-    .AddPolicyHandler(usersMicroserviceCircuitBreakerPolicy);
+    .AddPolicyHandler(usersMicroserviceCircuitBreakerPolicy)
+    .AddPolicyHandler(productsMicroserviceFallbackPolicy);
 
 builder.Services.AddHttpClient<ProductMicroserviceClient>(client =>
 {

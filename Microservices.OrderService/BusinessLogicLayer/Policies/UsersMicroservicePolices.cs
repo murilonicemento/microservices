@@ -1,13 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using BusinessLogicLayer.Policies.Contracts;
+using Microsoft.Extensions.Logging;
 using Polly;
 
 namespace BusinessLogicLayer.Policies;
 
-public class UsersMicroservicePolice : IUsersMicroservicePolicies
+public class UsersMicroservicePolices : IUsersMicroservicePolicies
 {
-    private readonly ILogger<UsersMicroservicePolice> _logger;
+    private readonly ILogger<UsersMicroservicePolices> _logger;
 
-    public UsersMicroservicePolice(ILogger<UsersMicroservicePolice> logger)
+    public UsersMicroservicePolices(ILogger<UsersMicroservicePolices> logger)
     {
         _logger = logger;
     }
