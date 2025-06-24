@@ -31,8 +31,12 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddTransient<IUsersMicroservicePolicies, UsersMicroservicePolice>();
 
-var usersMicroservicePolicy = builder.Services.BuildServiceProvider().GetRequiredService<IUsersMicroservicePolicies>()
+var usersMicroserviceRetryPolicy = builder.Services.BuildServiceProvider()
+    .GetRequiredService<IUsersMicroservicePolicies>()
     .GetRetryPolice();
+var usersMicroserviceCircuitBreakerPolicy = builder.Services.BuildServiceProvider()
+    .GetRequiredService<IUsersMicroservicePolicies>()
+    .GetCircuitBreakerPolice();
 
 builder.Services.AddHttpClient<UserMicroserviceClient>(client =>
     {
@@ -40,7 +44,8 @@ builder.Services.AddHttpClient<UserMicroserviceClient>(client =>
             new Uri(
                 $"http://{builder.Configuration["UsersMicroserviceName"]}:{builder.Configuration["UsersMicroservicePort"]}");
     })
-    .AddPolicyHandler(usersMicroservicePolicy);
+    .AddPolicyHandler(usersMicroserviceRetryPolicy)
+    .AddPolicyHandler(usersMicroserviceCircuitBreakerPolicy);
 
 builder.Services.AddHttpClient<ProductMicroserviceClient>(client =>
 {
