@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using BusinessLogicLayer.DTO;
 using Microsoft.Extensions.Logging;
 using Polly.CircuitBreaker;
+using Polly.Timeout;
 
 namespace BusinessLogicLayer.HttpClients;
 
@@ -54,9 +55,21 @@ public class UserMicroserviceClient
 
             return new User
             (
-                PersonName: "Temporarily Unavailable.",
-                Email: "Temporarily Unavailable.",
-                Gender: "Temporarily Unavailable.",
+                PersonName: "Temporarily Unavailable. (Circuit breaker)",
+                Email: "Temporarily Unavailable. (Circuit breaker)",
+                Gender: "Temporarily Unavailable. (Circuit breaker)",
+                UserId: Guid.Empty
+            );
+        }
+        catch (TimeoutRejectedException exception)
+        {
+            _logger.LogError(exception, "Timeout occurred while fetching data. Return dummy data.");
+
+            return new User
+            (
+                PersonName: "Temporarily Unavailable. (Timeout)",
+                Email: "Temporarily Unavailable. (Timeout)",
+                Gender: "Temporarily Unavailable. (Timeout)",
                 UserId: Guid.Empty
             );
         }
