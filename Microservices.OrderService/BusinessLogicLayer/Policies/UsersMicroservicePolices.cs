@@ -6,63 +6,18 @@ namespace BusinessLogicLayer.Policies;
 
 public class UsersMicroservicePolices : IUsersMicroservicePolicies
 {
-    private readonly ILogger<UsersMicroservicePolices> _logger;
+    private readonly IPollyPolicies _pollyPolicies;
 
-    public UsersMicroservicePolices(ILogger<UsersMicroservicePolices> logger)
+    public UsersMicroservicePolices(IPollyPolicies pollyPolicies)
     {
-        _logger = logger;
-    }
-
-    public IAsyncPolicy<HttpResponseMessage> GetRetryPolice()
-    {
-        var policy = Policy.HandleResult<HttpResponseMessage>(response => !response.IsSuccessStatusCode)
-            .WaitAndRetryAsync(
-                retryCount: 5,
-                sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                onRetry: (outcome, timeSpan, retryAttempt, context) =>
-                {
-                    _logger.LogInformation(
-                        "Retry {RetryAttempt} after {TimeSpanTotalSeconds} seconds", retryAttempt,
-                        timeSpan.TotalSeconds);
-                }
-            );
-
-        return policy;
-    }
-
-    public IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolice()
-    {
-        var policy = Policy.HandleResult<HttpResponseMessage>(response => !response.IsSuccessStatusCode)
-            .CircuitBreakerAsync(
-                handledEventsAllowedBeforeBreaking: 3,
-                durationOfBreak: TimeSpan.FromMinutes(2),
-                onBreak: (outcome, timespan) =>
-                {
-                    _logger.LogInformation(
-                        "Circuit breaker opened for {TimespanTotalMinutes} minutes due to consecutive 3 failures. The subsequent will be blocked."
-                        , timespan.TotalMinutes);
-                },
-                onReset: () =>
-                {
-                    _logger.LogInformation("Circuit breaker closed. The subsequent requests will be allowed.");
-                }
-            );
-
-        return policy;
-    }
-
-    public IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy()
-    {
-        var policy = Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(1500));
-
-        return policy;
+        _pollyPolicies = pollyPolicies;
     }
 
     public IAsyncPolicy<HttpResponseMessage> GetCombinedPolicy()
     {
-        var retryPolicy = GetRetryPolice();
-        var circuitBreakerPolicy = GetCircuitBreakerPolice();
-        var timeoutPolicy = GetTimeoutPolicy();
+        var retryPolicy = _pollyPolicies.GetRetryPolice(5);
+        var circuitBreakerPolicy = _pollyPolicies.GetCircuitBreakerPolice(3, TimeSpan.FromMinutes(2));
+        var timeoutPolicy = _pollyPolicies.GetTimeoutPolicy(TimeSpan.FromSeconds(5));
 
         return Policy.WrapAsync(
             retryPolicy,
