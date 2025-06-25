@@ -50,4 +50,11 @@ public class UsersMicroservicePolices : IUsersMicroservicePolicies
 
         return policy;
     }
+
+    public IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy()
+    {
+        var policy = Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(1500));
+
+        return policy;
+    }
 }

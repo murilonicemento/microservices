@@ -41,6 +41,9 @@ var usersMicroserviceRetryPolicy = builderProvider
 var usersMicroserviceCircuitBreakerPolicy = builderProvider
     .GetRequiredService<IUsersMicroservicePolicies>()
     .GetCircuitBreakerPolice();
+var usersMicroserviceTimeoutPolicy = builderProvider
+    .GetRequiredService<IUsersMicroservicePolicies>()
+    .GetTimeoutPolicy();
 var productsMicroserviceFallbackPolicy = builderProvider
     .GetRequiredService<IProductsMicroservicePolicies>()
     .GetFallbackPolicy();
@@ -53,14 +56,15 @@ builder.Services.AddHttpClient<UserMicroserviceClient>(client =>
     })
     .AddPolicyHandler(usersMicroserviceRetryPolicy)
     .AddPolicyHandler(usersMicroserviceCircuitBreakerPolicy)
-    .AddPolicyHandler(productsMicroserviceFallbackPolicy);
+    .AddPolicyHandler(usersMicroserviceTimeoutPolicy);
 
 builder.Services.AddHttpClient<ProductMicroserviceClient>(client =>
-{
-    client.BaseAddress =
-        new Uri(
-            $"http://{builder.Configuration["ProductsMicroserviceName"]}:{builder.Configuration["ProductsMicroservicePort"]}");
-});
+    {
+        client.BaseAddress =
+            new Uri(
+                $"http://{builder.Configuration["ProductsMicroserviceName"]}:{builder.Configuration["ProductsMicroservicePort"]}");
+    })
+    .AddPolicyHandler(productsMicroserviceFallbackPolicy);
 
 var app = builder.Build();
 
