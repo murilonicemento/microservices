@@ -47,6 +47,9 @@ var usersMicroserviceTimeoutPolicy = builderProvider
 var productsMicroserviceFallbackPolicy = builderProvider
     .GetRequiredService<IProductsMicroservicePolicies>()
     .GetFallbackPolicy();
+var productsMicroserviceBulkheadIsolation = builderProvider
+    .GetRequiredService<IProductsMicroservicePolicies>()
+    .GetBulkheadIsolationPolicy();
 
 builder.Services.AddHttpClient<UserMicroserviceClient>(client =>
     {
@@ -64,7 +67,8 @@ builder.Services.AddHttpClient<ProductMicroserviceClient>(client =>
             new Uri(
                 $"http://{builder.Configuration["ProductsMicroserviceName"]}:{builder.Configuration["ProductsMicroservicePort"]}");
     })
-    .AddPolicyHandler(productsMicroserviceFallbackPolicy);
+    .AddPolicyHandler(productsMicroserviceFallbackPolicy)
+    .AddPolicyHandler(productsMicroserviceBulkheadIsolation);
 
 var app = builder.Build();
 

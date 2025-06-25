@@ -7,6 +7,7 @@ using BusinessLogicLayer.DTO;
 using BusinessLogicLayer.Policies.Contracts;
 using Microsoft.Extensions.Logging;
 using Polly;
+using Polly.Bulkhead;
 
 namespace BusinessLogicLayer.Policies;
 
@@ -40,6 +41,21 @@ public class ProductsMicroservicePolicies : IProductsMicroservicePolicies
                 };
 
                 return response;
+            });
+
+        return policy;
+    }
+
+    public IAsyncPolicy<HttpResponseMessage> GetBulkheadIsolationPolicy()
+    {
+        var policy = Policy.BulkheadAsync<HttpResponseMessage>(
+            maxParallelization: 2,
+            maxQueuingActions: 40,
+            onBulkheadRejectedAsync: (context) =>
+            {
+                _logger.LogWarning("Bulkhead Isolation triggered. Can't send any more requests since the queue is full.");
+
+                throw new BulkheadRejectedException("Bulkhead queue is full.");
             });
 
         return policy;
