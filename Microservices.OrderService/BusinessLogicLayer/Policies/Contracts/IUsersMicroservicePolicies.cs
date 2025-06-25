@@ -9,4 +9,5 @@ public interface IUsersMicroservicePolicies
 
     public IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy();
 
+    public IAsyncPolicy<HttpResponseMessage> GetCombinedPolicy();
 }

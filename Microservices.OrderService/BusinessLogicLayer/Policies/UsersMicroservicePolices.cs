@@ -57,4 +57,17 @@ public class UsersMicroservicePolices : IUsersMicroservicePolicies
 
         return policy;
     }
+
+    public IAsyncPolicy<HttpResponseMessage> GetCombinedPolicy()
+    {
+        var retryPolicy = GetRetryPolice();
+        var circuitBreakerPolicy = GetCircuitBreakerPolice();
+        var timeoutPolicy = GetTimeoutPolicy();
+
+        return Policy.WrapAsync(
+            retryPolicy,
+            circuitBreakerPolicy,
+            timeoutPolicy
+        );
+    }
 }

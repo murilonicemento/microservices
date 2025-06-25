@@ -35,15 +35,18 @@ builder.Services.AddTransient<IProductsMicroservicePolicies, ProductsMicroservic
 
 var builderProvider = builder.Services.BuildServiceProvider();
 
-var usersMicroserviceRetryPolicy = builderProvider
+// var usersMicroserviceRetryPolicy = builderProvider
+//     .GetRequiredService<IUsersMicroservicePolicies>()
+//     .GetRetryPolice();
+// var usersMicroserviceCircuitBreakerPolicy = builderProvider
+//     .GetRequiredService<IUsersMicroservicePolicies>()
+//     .GetCircuitBreakerPolice();
+// var usersMicroserviceTimeoutPolicy = builderProvider
+//     .GetRequiredService<IUsersMicroservicePolicies>()
+//     .GetTimeoutPolicy();
+var usersMicroserviceCombinedPolicies = builderProvider
     .GetRequiredService<IUsersMicroservicePolicies>()
-    .GetRetryPolice();
-var usersMicroserviceCircuitBreakerPolicy = builderProvider
-    .GetRequiredService<IUsersMicroservicePolicies>()
-    .GetCircuitBreakerPolice();
-var usersMicroserviceTimeoutPolicy = builderProvider
-    .GetRequiredService<IUsersMicroservicePolicies>()
-    .GetTimeoutPolicy();
+    .GetCombinedPolicy();
 var productsMicroserviceFallbackPolicy = builderProvider
     .GetRequiredService<IProductsMicroservicePolicies>()
     .GetFallbackPolicy();
@@ -57,9 +60,10 @@ builder.Services.AddHttpClient<UserMicroserviceClient>(client =>
             new Uri(
                 $"http://{builder.Configuration["UsersMicroserviceName"]}:{builder.Configuration["UsersMicroservicePort"]}");
     })
-    .AddPolicyHandler(usersMicroserviceRetryPolicy)
-    .AddPolicyHandler(usersMicroserviceCircuitBreakerPolicy)
-    .AddPolicyHandler(usersMicroserviceTimeoutPolicy);
+    .AddPolicyHandler(usersMicroserviceCombinedPolicies);
+// .AddPolicyHandler(usersMicroserviceRetryPolicy)
+// .AddPolicyHandler(usersMicroserviceCircuitBreakerPolicy)
+// .AddPolicyHandler(usersMicroserviceTimeoutPolicy);
 
 builder.Services.AddHttpClient<ProductMicroserviceClient>(client =>
     {
