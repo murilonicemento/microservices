@@ -36,13 +36,23 @@ public class ProductMicroserviceClient
 
             if (!response.IsSuccessStatusCode)
             {
-                return response.StatusCode switch
+                if (response.StatusCode == HttpStatusCode.ServiceUnavailable)
                 {
-                    HttpStatusCode.NotFound => null,
-                    HttpStatusCode.BadRequest => throw new HttpRequestException("Bad request", null,
-                        HttpStatusCode.BadRequest),
-                    _ => throw new HttpRequestException("Request failed;")
-                };
+                    var productFallback = await response.Content.ReadFromJsonAsync<Product>();
+
+                    if (productFallback is null)
+                        throw new NotImplementedException("Fallback policy was not implemented.");
+
+                    return productFallback;
+                }
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                    return null;
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                    throw new HttpRequestException("Bad request", null,
+                        HttpStatusCode.BadRequest);
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                    throw new HttpRequestException("Request failed");
             }
 
             var product = await response.Content.ReadFromJsonAsync<Product>();
