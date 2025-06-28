@@ -66,7 +66,7 @@ public class ProductMicroserviceClient
                 .SetAbsoluteExpiration(TimeSpan.FromSeconds(30))
                 .SetSlidingExpiration(TimeSpan.FromSeconds(10));
 
-            await _distributedCache.SetAsync(cacheKey, productJson, distributedCacheEntryOptions);
+            await _distributedCache.SetAsync($"product:{productId}", productJson, distributedCacheEntryOptions);
 
             return product;
         }
