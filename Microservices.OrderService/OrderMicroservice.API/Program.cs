@@ -5,7 +5,6 @@ using BusinessLogicLayer.Policies;
 using DataAccessLayer;
 using FluentValidation.AspNetCore;
 using OrderMicroservice.API.Middlewares;
-using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -13,7 +12,7 @@ var configuration = builder.Configuration;
 builder.Services.AddControllers();
 
 builder.Services.AddDataAccessLayer(configuration);
-builder.Services.AddBusinessLogicLayer();
+builder.Services.AddBusinessLogicLayer(configuration);
 
 builder.Services.AddFluentValidationAutoValidation();
 
