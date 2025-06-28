@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 using BusinessLogicLayer.DTO;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Polly.Bulkhead;
 
@@ -10,17 +12,26 @@ public class ProductMicroserviceClient
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<ProductMicroserviceClient> _logger;
+    private readonly IDistributedCache _distributedCache;
 
-    public ProductMicroserviceClient(HttpClient httpClient, ILogger<ProductMicroserviceClient> logger)
+    public ProductMicroserviceClient(HttpClient httpClient, ILogger<ProductMicroserviceClient> logger,
+        IDistributedCache distributedCache)
     {
         _httpClient = httpClient;
         _logger = logger;
+        _distributedCache = distributedCache;
     }
 
     public async Task<Product?> GetProductById(Guid productId)
     {
         try
         {
+            var cacheKey = $"product:{productId}";
+            var cachedProduct = await _distributedCache.GetStringAsync(cacheKey);
+
+            if (cachedProduct is not null)
+                return JsonSerializer.Deserialize<Product>(cachedProduct);
+
             var response = await _httpClient.GetAsync($"/api/products/search/product-id/{productId}");
 
             if (!response.IsSuccessStatusCode)
@@ -38,6 +49,14 @@ public class ProductMicroserviceClient
 
             if (product is null)
                 throw new ArgumentException("Invalid product ID.");
+
+            var productJson = JsonSerializer.SerializeToUtf8Bytes(product);
+
+            var distributedCacheEntryOptions = new DistributedCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromSeconds(30))
+                .SetSlidingExpiration(TimeSpan.FromSeconds(10));
+
+            await _distributedCache.SetAsync(cacheKey, productJson, distributedCacheEntryOptions);
 
             return product;
         }
