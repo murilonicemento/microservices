@@ -25,11 +25,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductService.API", "Micro
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservices.UserService", "Microservices.UserService", "{30DA48AA-857B-D6BB-5CB0-B112FF09C78C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservices.API", "Microservices.UserService\Microservices.API\Microservices.API.csproj", "{FB0F3753-F610-4B4F-9E17-08F54238F59B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.API", "Microservices.UserService\UserService.API\UserService.API.csproj", "{FB0F3753-F610-4B4F-9E17-08F54238F59B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservices.Core", "Microservices.UserService\Microservices.Core\Microservices.Core.csproj", "{1E013983-7051-4EDA-A769-95A530E50FBF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Core", "Microservices.UserService\UserService.Core\UserService.Core.csproj", "{1E013983-7051-4EDA-A769-95A530E50FBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservices.Infrastructure", "Microservices.UserService\Microservices.Infrastructure\Microservices.Infrastructure.csproj", "{AA5DE02E-53C9-409A-B1BB-202BF81AD451}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Infrastructure", "Microservices.UserService\UserService.Infrastructure\UserService.Infrastructure.csproj", "{AA5DE02E-53C9-409A-B1BB-202BF81AD451}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
