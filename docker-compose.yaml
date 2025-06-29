@@ -1,6 +1,7 @@
 ﻿services:
   orders-microservice:
     image: orders-microservice
+    container_name: orders-microservice
     build:
       context: ./Microservices.OrderService/
       dockerfile: OrderMicroservice.API/Dockerfile
@@ -24,6 +25,7 @@
       - mongodb
   mongodb:
     image: mongo:latest
+    container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
@@ -32,6 +34,7 @@
       - orders-microservice-mongodb-network
   products-microservice:
     image: products-microservice
+    container_name: products-microservice
     build:
       context: ./Microservices.ProductService
       dockerfile: ProductService.API/Dockerfile
@@ -53,6 +56,7 @@
       - mysql
   mysql:
     image: mysql:latest
+    container_name: mysql
     env_file:
       - .env
     environment:
@@ -68,6 +72,7 @@
       - products-microservice-mysql-network
   users-microservice:
     image: users-microservice
+    container_name: users-microservice
     build:
       context: ./Microservices.UserService
       dockerfile: UserService.API/Dockerfile
@@ -83,6 +88,7 @@
       - postgres
   postgres:
     image: postgres:latest
+    container_name: postgres
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -95,6 +101,7 @@
       - users-microservice-postgres-network
   redis:
     image: redis:latest
+    container_name: redis
     ports:
       - "6379:6379"
     volumes:
@@ -103,6 +110,7 @@
       - microservice-network
   api-gateway:
     image: api-gateway
+    container_name: api-gateway
     build:
       context: ./Microservices.ApiGateway/ApiGateway
       dockerfile: Dockerfile
@@ -112,6 +120,7 @@
       - microservice-network
   rabbitmq:
     image: rabbitmq:latest
+    container_name: rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
