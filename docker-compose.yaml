@@ -1,11 +1,11 @@
 ﻿version: '3.4'
 
 services:
-  ordersmicroservice.api:
-    image: ordersmicroserviceapi
+  orders-microservice:
+    image: orders-microservice
     build:
       context: .
-      dockerfile: OrdersMicroservice.API/Dockerfile
+      dockerfile: ./Microservices.OrderService/OrderMicroservice.API/Dockerfile
     environment:
       - MONGODB_HOST=mongodb-container
       - MONGODB_PORT=27017
@@ -26,21 +26,20 @@ services:
       - orders-mongodb-network
       - ecommerce-network
     depends_on:
-      - mongodb-container
-
-
-  mongodb-container:
+      - mongodb
+  mongodb:
     image: mongo:latest
     ports:
       - "27017:27017"
     volumes:
-      - ../mongodb-init:/docker-entrypoint-initdb.d
+      - ./init-db/mongodb.js:/docker-entrypoint-initdb.d
     networks:
-      - orders-mongodb-network
-  
-  
+      - orders-microservice-mongodb-network
   products-microservice:
-    image: products-microservice:latest
+    image: products-microservice
+    build:
+      context: .
+      dockerfile: ./Microservices.ProductService/ProductService.API/Dockerfile
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_ENVIRONMENT=Development
@@ -59,23 +58,22 @@ services:
       - products-mysql-network
       - ecommerce-network
     depends_on:
-      - mysql-container
-  
-  
-  mysql-container:
-    image: mysql:8.0
+      - mysql
+  mysql:
+    image: mysql:latest
     environment:
       - MYSQL_ROOT_PASSWORD=admin
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
-      - ../mysql-init:/docker-entrypoint-initdb.d
+      - ./init-db/mysql.sql:/docker-entrypoint-initdb.d
     networks:
       - products-mysql-network
-
-
   users-microservice:
-    image: users-microservice:latest
+    image: users-microservice
+    build:
+      context: .
+      dockerfile: ./Microservices.UserService/Microservices.API/Dockerfile
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTP_ENVIRONMENT=Development
@@ -90,45 +88,38 @@ services:
       - users-postgres-network
       - ecommerce-network
     depends_on:
-      - postgres-container
-
-
-  postgres-container:
-    image: postgres:13
+      - postgres
+  postgres:
+    image: postgres:latest
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=eCommerceUsers
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
-      - ../postgres-init:/docker-entrypoint-initdb.d
+      - ./init-db/postgres.sql:/docker-entrypoint-initdb.d
     networks:
       - users-postgres-network
-
-
   redis:
     image: redis:latest
     ports:
       - "6379:6379"
     volumes:
-      - c:/microservices/redis-cache:/data
+      - redis-data:/data
     networks:
       - ecommerce-network
-
-
-  apigateway:
-    image: apigateway
+  api-gateway:
+    image: api-gateway
     build:
       context: .
-      dockerfile: ApiGatway/Dockerfile
+      dockerfile: ./Microservices.ApiGateway/ApiGateway/Dockerfile
     ports:
       - "4000:8080"
     networks:
       - ecommerce-network
-
   rabbitmq:
-    image: rabbitmq:3.13-management
+    image: rabbitmq:latest
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -137,7 +128,6 @@ services:
       - RABBITMQ_DEFAULT_PASS=password
     networks:
       - ecommerce-network
-
 networks:
   orders-mongodb-network:
     driver: bridge
