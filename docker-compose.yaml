@@ -27,7 +27,7 @@
     ports:
       - "27017:27017"
     volumes:
-      - ./init-db/mongodb.js:/docker-entrypoint-initdb.d
+      - ./init-db/mongodb.js:/docker-entrypoint-initdb.d/mongodb.js
     networks:
       - orders-microservice-mongodb-network
   products-microservice:
@@ -63,7 +63,7 @@
     ports:
       - "3306:3306"
     volumes:
-      - ./init-db/mysql.sql:/docker-entrypoint-initdb.d
+      - ./init-db/mysql.sql:/docker-entrypoint-initdb.d/mysql.sql
     networks:
       - products-microservice-mysql-network
   users-microservice:
@@ -90,7 +90,7 @@
     ports:
       - "5432:5432"
     volumes:
-      - ./init-db/postgres.sql:/docker-entrypoint-initdb.d
+      - ./init-db/postgres.sql:/docker-entrypoint-initdb.d/postgres.sql
     networks:
       - users-microservice-postgres-network
   redis:
