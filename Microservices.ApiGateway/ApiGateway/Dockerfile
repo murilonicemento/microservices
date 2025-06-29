@@ -7,10 +7,10 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Microservices.ApiGateway/ApiGateway/ApiGateway.csproj", "Microservices.ApiGateway/ApiGateway/"]
-RUN dotnet restore "Microservices.ApiGateway/ApiGateway/ApiGateway.csproj"
+COPY ["ApiGateway.csproj", "ApiGateway/"]
+RUN dotnet restore "ApiGateway/ApiGateway.csproj"
 COPY . .
-WORKDIR "/src/Microservices.ApiGateway/ApiGateway"
+WORKDIR "/src/ApiGateway"
 RUN dotnet build "./ApiGateway.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
