@@ -32,7 +32,7 @@ public class ProductMicroserviceClient
             if (cachedProduct is not null)
                 return JsonSerializer.Deserialize<Product>(cachedProduct);
 
-            var response = await _httpClient.GetAsync($"/api/products/search/product-id/{productId}");
+            var response = await _httpClient.GetAsync($"/gateway/products/search/product-id/{productId}");
 
             if (!response.IsSuccessStatusCode)
             {

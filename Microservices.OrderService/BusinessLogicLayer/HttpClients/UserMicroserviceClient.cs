@@ -33,7 +33,7 @@ public class UserMicroserviceClient
             if (cachedUser is not null)
                 return JsonSerializer.Deserialize<User>(cachedUser);
 
-            var response = await _httpClient.GetAsync($"/api/user/{userId}");
+            var response = await _httpClient.GetAsync($"/gateway/Users/{userId}");
 
             if (!response.IsSuccessStatusCode)
             {

@@ -70,7 +70,7 @@
       context: ./Microservices.UserService
       dockerfile: UserService.API/Dockerfile
     environment:
-      - ASPNETCORE_HTTP_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__PostgreSQL=${POSTGRESQL_CONNECTION_STRING}
     ports:
       - "5000:9090"

@@ -35,12 +35,12 @@
       ]
     },
     {
-      "UpstreamPathTemplate": "/gateway/Order/search/productid/{productId}/",
+      "UpstreamPathTemplate": "/gateway/Order/search/product-id/{productId}/",
       "UpstreamHttpMethod": [
         "Get"
       ],
       "UpstreamScheme": "http",
-      "DownstreamPathTemplate": "/api/Order/search/productid/{productId}",
+      "DownstreamPathTemplate": "/api/Order/search/product-id/{productId}",
       "DownstreamHostAndPorts": [
         {
           "Host": "orders-microservice",
@@ -196,7 +196,7 @@
       ],
       "UpstreamScheme": "http",
       "DownstreamPathTemplate": "/api/Auth/login",
-      "DownstreamHostAndPorts": [
+      "DownstreamHostAndPorts": [ 
         {
           "Host": "users-microservice",
           "Port": 9090
@@ -204,12 +204,12 @@
       ]
     },
     {
-      "UpstreamPathTemplate": "/gateway/Users/{userId}/",
+      "UpstreamPathTemplate": "/gateway/Users/{userId}",
       "UpstreamHttpMethod": [
         "Get"
       ],
       "UpstreamScheme": "http",
-      "DownstreamPathTemplate": "/api/users/{userId}",
+      "DownstreamPathTemplate": "/api/user/{userId}",
       "DownstreamHostAndPorts": [
         {
           "Host": "users-microservice",
