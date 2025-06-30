@@ -73,7 +73,7 @@
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__PostgreSQL=${POSTGRESQL_CONNECTION_STRING}
     ports:
-      - "5000:9090"
+      - "5000:8080"
     networks:
       - users-microservice-postgres-network
       - microservice-network
@@ -90,6 +90,7 @@
       - "5432:5432"
     volumes:
       - ./init-db/postgres.sql:/docker-entrypoint-initdb.d/postgres.sql
+      - ./init-db/create-database-postgres.sql:/docker-entrypoint-initdb.d/create-database-postgres.sql
     networks:
       - users-microservice-postgres-network
   redis:
