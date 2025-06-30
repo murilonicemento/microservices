@@ -1,9 +1,7 @@
-﻿CREATE DATABASE microservices_users;
-
-\connect microservices_users;
+﻿\connect microservices_users;
          
 -- Create the table if it does not exist
-CREATE TABLE public."Users"
+CREATE TABLE IF NOT EXISTS public."Users"
 (
     "UserId"     uuid                                               NOT NULL,
     "PersonName" character varying(50) COLLATE pg_catalog."default" NOT NULL,
