@@ -17,18 +17,22 @@
       - ProductsMicroservicePort=8080
     ports:
       - "7000:8080"
+    restart: unless-stopped
     networks:
       - orders-microservice-mongodb-network
       - microservice-network
     depends_on:
       - mongodb
+      - redis
   mongodb:
     image: mongo:latest
     container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
+      - mongo-data:/data/db
       - ./init-db/mongodb.js:/docker-entrypoint-initdb.d/mongodb.js
+    restart: unless-stopped
     networks:
       - orders-microservice-mongodb-network
   products-microservice:
@@ -46,11 +50,13 @@
       - RabbitMQ_Port=5672
     ports:
       - "6001:8080"
+    restart: unless-stopped
     networks:
       - products-microservice-mysql-network
       - microservice-network
     depends_on:
       - mysql
+      - rabbitmq
   mysql:
     image: mysql:latest
     container_name: mysql
@@ -60,7 +66,9 @@
     ports:
       - "3306:3306"
     volumes:
+      - mysql-data:/var/lib/mysql
       - ./init-db/mysql.sql:/docker-entrypoint-initdb.d/mysql.sql
+    restart: unless-stopped
     networks:
       - products-microservice-mysql-network
   users-microservice:
@@ -74,6 +82,7 @@
       - ConnectionStrings__PostgreSQL=${POSTGRESQL_CONNECTION_STRING}
     ports:
       - "5000:8080"
+    restart: unless-stopped
     networks:
       - users-microservice-postgres-network
       - microservice-network
@@ -89,8 +98,10 @@
     ports:
       - "5432:5432"
     volumes:
+      - pg-data:/var/lib/postgresql/data
       - ./init-db/postgres.sql:/docker-entrypoint-initdb.d/postgres.sql
       - ./init-db/create-database-postgres.sql:/docker-entrypoint-initdb.d/create-database-postgres.sql
+    restart: unless-stopped
     networks:
       - users-microservice-postgres-network
   redis:
@@ -100,6 +111,7 @@
       - "6379:6379"
     volumes:
       - redis-data:/data
+    restart: unless-stopped
     networks:
       - microservice-network
   api-gateway:
@@ -110,6 +122,7 @@
       dockerfile: Dockerfile
     ports:
       - "4000:8080"
+    restart: unless-stopped
     networks:
       - microservice-network
   rabbitmq:
@@ -122,13 +135,16 @@
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq-data:/var/lib/rabbitmq
     restart: unless-stopped
     networks:
       - microservice-network
 volumes:
+  mongo-data:
+  mysql-data:
+  pg-data:
   redis-data:
-  rabbitmq_data:
+  rabbitmq-data:
 networks:
   orders-microservice-mongodb-network:
     driver: bridge
