@@ -10,7 +10,10 @@
       - ConnectionStrings__MongoDB=${MONGODB_CONNECTION_STRING}
       - MONGODB_DATABASE=${MONGODB_DATABASE}
       - ConnectionStrings__Redis=${REDIS_CONNECTION_STRING}
-      - ConnectionStrings__RabbitMQ=${RABBITMQ_CONNECTION_STRING}
+      - RabbitMQ_Host_Name=${RABBITMQ_HOST_NAME}
+      - RabbitMQ_User_Name=${RABBITMQ_USER_NAME}
+      - RabbitMQ_Password=${RABBITMQ_PASSWORD}
+      - RabbitMQ_Port=${RABBITMQ_PORT}
       - UsersMicroserviceName=api-gateway
       - UsersMicroservicePort=8080
       - ProductsMicroserviceName=api-gateway
