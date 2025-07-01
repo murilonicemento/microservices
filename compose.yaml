@@ -10,7 +10,7 @@
       - ConnectionStrings__MongoDB=${MONGODB_CONNECTION_STRING}
       - MONGODB_DATABASE=${MONGODB_DATABASE}
       - ConnectionStrings__Redis=${REDIS_CONNECTION_STRING}
-      - RabbitMQ=${RABBITMQ_CONNECTION_STRING}
+      - ConnectionStrings__RabbitMQ=${RABBITMQ_CONNECTION_STRING}
       - UsersMicroserviceName=api-gateway
       - UsersMicroservicePort=8080
       - ProductsMicroserviceName=api-gateway
@@ -113,7 +113,7 @@
     networks:
       - microservice-network
   rabbitmq:
-    image: rabbitmq:latest
+    image: rabbitmq:3.13.7-management-alpine
     container_name: rabbitmq
     ports:
       - "5672:5672"
@@ -121,10 +121,14 @@
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
     networks:
       - microservice-network
 volumes:
   redis-data:
+  rabbitmq_data:
 networks:
   orders-microservice-mongodb-network:
     driver: bridge
