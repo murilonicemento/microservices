@@ -1,4 +1,5 @@
-﻿using BusinessLogicLayer.RabbitMQ.Contracts;
+﻿using System.Text.Json;
+using BusinessLogicLayer.RabbitMQ.Contracts;
 using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 
@@ -23,5 +24,12 @@ public class RabbitMQPublisher : IRabbitMQPublisher
     {
         await using var connection = await _connectionFactory.CreateConnectionAsync();
         await using var channel = await connection.CreateChannelAsync();
+        const string exchangeName = "products.exchange";
+
+        await channel.ExchangeDeclareAsync(exchange: exchangeName, type: ExchangeType.Direct, durable: true);
+
+        var messageBody = JsonSerializer.SerializeToUtf8Bytes(message);
+
+        await channel.BasicPublishAsync(exchange: exchangeName, routingKey: routingKey, body: messageBody);
     }
 }
