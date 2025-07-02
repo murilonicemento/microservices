@@ -10,6 +10,7 @@
       - ConnectionStrings__MongoDB=${MONGODB_CONNECTION_STRING}
       - MONGODB_DATABASE=${MONGODB_DATABASE}
       - ConnectionStrings__Redis=${REDIS_CONNECTION_STRING}
+      - RabbitMQ_Products_Exchange=${RABBITMQ_PRODUCT_EXCHANGE}
       - UsersMicroserviceName=api-gateway
       - UsersMicroservicePort=8080
       - ProductsMicroserviceName=api-gateway
@@ -47,6 +48,7 @@
       - RabbitMQ_User_Name=${RABBITMQ_USER_NAME}
       - RabbitMQ_Password=${RABBITMQ_PASSWORD}
       - RabbitMQ_Port=${RABBITMQ_PORT}
+      - RabbitMQ_Products_Exchange=${RABBITMQ_PRODUCT_EXCHANGE}
     ports:
       - "6001:8080"
     restart: unless-stopped

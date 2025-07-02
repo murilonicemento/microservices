@@ -1,6 +1,8 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
 using BusinessLogicLayer.DTO;
+using BusinessLogicLayer.RabbitMQ.Contracts;
+using BusinessLogicLayer.RabbitMQ.Records;
 using BusinessLogicLayer.ServicesContracts;
 using DataAccessLayer.Entities;
 using DataAccessLayer.RepositoriesContracts;
@@ -15,18 +17,21 @@ public class ProductService : IProductService
     private readonly IValidator<ProductUpdateRequest> _productUpdateRequestValidator;
     private readonly IMapper _mapper;
     private readonly IProductRepository _productRepository;
+    private readonly IRabbitMQPublisher _rabbitMQPublisher;
 
     public ProductService(
         IValidator<ProductAddRequest> productAddRequestValidator,
         IValidator<ProductUpdateRequest> productUpdateRequestValidator,
         IMapper mapper,
-        IProductRepository productRepository
+        IProductRepository productRepository,
+        IRabbitMQPublisher rabbitMQPublisher
     )
     {
         _productAddRequestValidator = productAddRequestValidator;
         _productUpdateRequestValidator = productUpdateRequestValidator;
         _mapper = mapper;
         _productRepository = productRepository;
+        _rabbitMQPublisher = rabbitMQPublisher;
     }
 
     public async Task<List<ProductResponse?>> GetProducts()
@@ -75,6 +80,20 @@ public class ProductService : IProductService
             throw new ArgumentException("Invalid product ID");
 
         var product = _mapper.Map<Product>(productUpdateRequest);
+
+        var isProductNameChanged = productUpdateRequest.ProductName != productToUpdate.ProductName;
+
+        if (isProductNameChanged)
+        {
+            var message = new ProductNameUpdateMessage
+            (
+                ProductId: productToUpdate.ProductId,
+                ProductName: productToUpdate.ProductName
+            );
+
+            await _rabbitMQPublisher.Publish<ProductNameUpdateMessage>("product.update.name", message);
+        }
+
         var updatedProduct = await _productRepository.UpdateProduct(product);
 
         return _mapper.Map<ProductResponse>(updatedProduct);
