@@ -7,16 +7,18 @@ namespace BusinessLogicLayer.RabbitMQ;
 
 public class RabbitMQPublisher : IRabbitMQPublisher
 {
+    private readonly IConfiguration _configuration;
     private readonly ConnectionFactory _connectionFactory;
 
     public RabbitMQPublisher(IConfiguration configuration)
     {
+        _configuration = configuration;
         _connectionFactory = new ConnectionFactory
         {
-            HostName = configuration["RabbitMQ_Host_Name"]!,
-            UserName = configuration["RabbitMQ_User_Name"]!,
-            Password = configuration["RabbitMQ_Password"]!,
-            Port = Convert.ToInt16(configuration["RabbitMQ_Port"])
+            HostName = _configuration["RabbitMQ_Host_Name"]!,
+            UserName = _configuration["RabbitMQ_User_Name"]!,
+            Password = _configuration["RabbitMQ_Password"]!,
+            Port = Convert.ToInt16(_configuration["RabbitMQ_Port"])
         };
     }
 
@@ -24,7 +26,7 @@ public class RabbitMQPublisher : IRabbitMQPublisher
     {
         await using var connection = await _connectionFactory.CreateConnectionAsync();
         await using var channel = await connection.CreateChannelAsync();
-        const string exchangeName = "products.exchange";
+        var exchangeName = _configuration["RabbitMQ_Products_Exchange"]!;
 
         await channel.ExchangeDeclareAsync(exchange: exchangeName, type: ExchangeType.Direct, durable: true);
 
