@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
 using BusinessLogicLayer.DTO;
-using BusinessLogicLayer.RabbitMQ.Contracts;
-using BusinessLogicLayer.RabbitMQ.Records;
+using BusinessLogicLayer.MessageBroker.Contracts;
+using BusinessLogicLayer.MessageBroker.Records;
 using BusinessLogicLayer.ServicesContracts;
 using DataAccessLayer.Entities;
 using DataAccessLayer.RepositoriesContracts;
@@ -17,21 +17,21 @@ public class ProductService : IProductService
     private readonly IValidator<ProductUpdateRequest> _productUpdateRequestValidator;
     private readonly IMapper _mapper;
     private readonly IProductRepository _productRepository;
-    private readonly IRabbitMQPublisher _rabbitMQPublisher;
+    private readonly IMessagePublisher _messagePublisher;
 
     public ProductService(
         IValidator<ProductAddRequest> productAddRequestValidator,
         IValidator<ProductUpdateRequest> productUpdateRequestValidator,
         IMapper mapper,
         IProductRepository productRepository,
-        IRabbitMQPublisher rabbitMQPublisher
+        IMessagePublisher messagePublisher
     )
     {
         _productAddRequestValidator = productAddRequestValidator;
         _productUpdateRequestValidator = productUpdateRequestValidator;
         _mapper = mapper;
         _productRepository = productRepository;
-        _rabbitMQPublisher = rabbitMQPublisher;
+        _messagePublisher = messagePublisher;
     }
 
     public async Task<List<ProductResponse?>> GetProducts()
@@ -91,7 +91,7 @@ public class ProductService : IProductService
                 ProductName: productToUpdate.ProductName
             );
 
-            await _rabbitMQPublisher.Publish<ProductNameUpdateMessage>("product.update.name", message);
+            await _messagePublisher.Publish<ProductNameUpdateMessage>("product.update.name", message);
         }
 
         var updatedProduct = await _productRepository.UpdateProduct(product);

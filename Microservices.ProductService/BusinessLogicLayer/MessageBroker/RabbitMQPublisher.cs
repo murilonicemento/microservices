@@ -1,11 +1,11 @@
 ﻿using System.Text.Json;
-using BusinessLogicLayer.RabbitMQ.Contracts;
+using BusinessLogicLayer.MessageBroker.Contracts;
 using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 
-namespace BusinessLogicLayer.RabbitMQ;
+namespace BusinessLogicLayer.MessageBroker;
 
-public class RabbitMQPublisher : IRabbitMQPublisher
+public class RabbitMQPublisher : IMessagePublisher
 {
     private readonly IConfiguration _configuration;
     private readonly ConnectionFactory _connectionFactory;

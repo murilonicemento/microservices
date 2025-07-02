@@ -1,6 +1,6 @@
 ﻿using BusinessLogicLayer.Mappers;
-using BusinessLogicLayer.RabbitMQ;
-using BusinessLogicLayer.RabbitMQ.Contracts;
+using BusinessLogicLayer.MessageBroker;
+using BusinessLogicLayer.MessageBroker.Contracts;
 using BusinessLogicLayer.Services;
 using BusinessLogicLayer.ServicesContracts;
 using BusinessLogicLayer.Validators;
@@ -21,7 +21,7 @@ public static class DependencyInjection
         services.AddValidatorsFromAssemblyContaining<ProductUpdateRequestValidator>();
         
         services.AddScoped<IProductService, ProductService>();
-        services.AddTransient<IRabbitMQPublisher, RabbitMQPublisher>();
+        services.AddTransient<IMessagePublisher, RabbitMQPublisher>();
 
         return services;
     }
