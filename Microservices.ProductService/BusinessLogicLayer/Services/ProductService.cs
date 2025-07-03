@@ -2,7 +2,7 @@
 using AutoMapper;
 using BusinessLogicLayer.DTO;
 using BusinessLogicLayer.MessageBroker.Contracts;
-using BusinessLogicLayer.MessageBroker.Records;
+using BusinessLogicLayer.MessageBroker.DTO;
 using BusinessLogicLayer.ServicesContracts;
 using DataAccessLayer.Entities;
 using DataAccessLayer.RepositoriesContracts;
