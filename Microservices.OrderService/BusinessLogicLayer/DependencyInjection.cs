@@ -1,10 +1,15 @@
 ﻿using BusinessLogicLayer.Mappers;
+using BusinessLogicLayer.MessageBroker;
+using BusinessLogicLayer.MessageBroker.Contracts;
+using BusinessLogicLayer.MessageBroker.HostedServices;
 using BusinessLogicLayer.Services;
 using BusinessLogicLayer.ServicesContracts;
 using BusinessLogicLayer.Validators;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using RabbitMQ.Client;
 
 namespace BusinessLogicLayer;
 
@@ -26,6 +31,10 @@ public static class DependencyInjection
         services.AddAutoMapper(typeof(OrderUpdateRequestToOrderMappingProfile).Assembly);
 
         services.AddScoped<IOrderService, OrderService>();
+        services.AddTransient<IMessageConsumer, RabbitMQConsumer>();
+
+        services.AddHostedService<RabbitMQHostedService>();
+
         services.AddStackExchangeRedisCache(options =>
         {
             var connectionString = configuration.GetConnectionString("Redis");
