@@ -31,9 +31,11 @@ public static class DependencyInjection
         services.AddAutoMapper(typeof(OrderUpdateRequestToOrderMappingProfile).Assembly);
 
         services.AddScoped<IOrderService, OrderService>();
-        services.AddTransient<IMessageConsumer, RabbitMQConsumer>();
+        services.AddTransient<IMessageUpdateMessageConsumer, RabbitMQProductNameUpdateConsumer>();
+        services.AddTransient<IMessageDeletionConsumer, RabbitMQProductDeletionConsumer>();
 
-        services.AddHostedService<RabbitMQHostedService>();
+        services.AddHostedService<ProductNameUpdateHostedService>();
+        services.AddHostedService<ProductDeletionMessageHostedService>();
 
         services.AddStackExchangeRedisCache(options =>
         {

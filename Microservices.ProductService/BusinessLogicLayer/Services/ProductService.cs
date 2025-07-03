@@ -106,7 +106,19 @@ public class ProductService : IProductService
         if (product is null)
             return false;
 
-        return await _productRepository.DeleteProduct(productId);
+        var isDeleted = await _productRepository.DeleteProduct(productId);
+
+        if (isDeleted)
+        {
+            var message = new ProductDeletionMessage(
+                ProductId: product.ProductId,
+                ProductName: product.ProductName
+            );
+
+            await _messagePublisher.Publish<ProductDeletionMessage>("product.delete", message);
+        }
+
+        return isDeleted;
     }
 
     private static void ValidateParameters(ValidationResult validationResult)

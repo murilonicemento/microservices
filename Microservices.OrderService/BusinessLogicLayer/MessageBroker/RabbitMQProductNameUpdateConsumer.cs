@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using BusinessLogicLayer.MessageBroker.Contracts;
-using BusinessLogicLayer.MessageBroker.Records;
+using BusinessLogicLayer.MessageBroker.DTO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
@@ -9,16 +9,16 @@ using RabbitMQ.Client.Events;
 
 namespace BusinessLogicLayer.MessageBroker;
 
-public class RabbitMQConsumer : IMessageConsumer, IDisposable, IAsyncDisposable
+public class RabbitMQProductNameUpdateConsumer : IMessageUpdateMessageConsumer, IAsyncDisposable
 {
     private readonly IConfiguration _configuration;
     private readonly ConnectionFactory _connectionFactory;
-    private readonly ILogger<RabbitMQConsumer> _logger;
+    private readonly ILogger<RabbitMQProductNameUpdateConsumer> _logger;
 
     private IConnection _connection;
     private IChannel _channel;
 
-    public RabbitMQConsumer(IConfiguration configuration, ILogger<RabbitMQConsumer> logger)
+    public RabbitMQProductNameUpdateConsumer(IConfiguration configuration, ILogger<RabbitMQProductNameUpdateConsumer> logger)
     {
         _configuration = configuration;
         _connectionFactory = new ConnectionFactory
@@ -60,12 +60,6 @@ public class RabbitMQConsumer : IMessageConsumer, IDisposable, IAsyncDisposable
         };
 
         await _channel.BasicConsumeAsync(queue: queueName, consumer: consumer, autoAck: true);
-    }
-
-    public void Dispose()
-    {
-        _connection.Dispose();
-        _channel.Dispose();
     }
 
     public async ValueTask DisposeAsync()

@@ -3,11 +3,11 @@ using Microsoft.Extensions.Hosting;
 
 namespace BusinessLogicLayer.MessageBroker.HostedServices;
 
-public class RabbitMQHostedService : IHostedService
+public class ProductNameUpdateHostedService : IHostedService
 {
-    private readonly IMessageConsumer _productNameUpdateConsumer;
+    private readonly IMessageUpdateMessageConsumer _productNameUpdateConsumer;
 
-    public RabbitMQHostedService(IMessageConsumer productNameUpdateConsumer)
+    public ProductNameUpdateHostedService(IMessageUpdateMessageConsumer productNameUpdateConsumer)
     {
         _productNameUpdateConsumer = productNameUpdateConsumer;
     }
