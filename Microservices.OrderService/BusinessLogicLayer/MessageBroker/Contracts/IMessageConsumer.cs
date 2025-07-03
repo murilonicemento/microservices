@@ -2,5 +2,6 @@
 
 public interface IMessageConsumer
 {
-    public Task Consume();
+    public Task ConsumeAsync();
+    public ValueTask DisposeAsync();
 }
