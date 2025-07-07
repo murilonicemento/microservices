@@ -1,0 +1,170 @@
+﻿services:
+  orders-microservice:
+    image: orders-microservice
+    container_name: orders-microservice
+    build:
+      context: ./Microservices.OrderService/
+      dockerfile: OrderMicroservice.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__MongoDB=${MONGODB_CONNECTION_STRING}
+      - MONGODB_DATABASE=${MONGODB_DATABASE}
+      - ConnectionStrings__Redis=${REDIS_CONNECTION_STRING}
+      - RabbitMQ_Host_Name=${RABBITMQ_HOST_NAME}
+      - RabbitMQ_User_Name=${RABBITMQ_USER_NAME}
+      - RabbitMQ_Password=${RABBITMQ_PASSWORD}
+      - RabbitMQ_Port=${RABBITMQ_PORT}
+      - RabbitMQ_Products_Exchange=${RABBITMQ_PRODUCT_EXCHANGE}
+      - UsersMicroserviceName=api-gateway
+      - UsersMicroservicePort=8080
+      - ProductsMicroserviceName=api-gateway
+      - ProductsMicroservicePort=8080
+    ports:
+      - "7000:8080"
+    restart: unless-stopped
+    networks:
+      - orders-microservice-mongodb-network
+      - microservice-network
+    depends_on:
+      - mongodb
+      - redis
+  mongodb:
+    image: microservices-mongodb:latest
+    container_name: mongodb
+    build:
+      context: .
+      dockerfile: ./dbs/mongodb/Dockerfile
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+      - ./init-db/mongodb.js:/docker-entrypoint-initdb.d/mongodb.js
+    restart: unless-stopped
+    networks:
+      - orders-microservice-mongodb-network
+  products-microservice:
+    image: products-microservice
+    container_name: products-microservice
+    build:
+      context: ./Microservices.ProductService
+      dockerfile: ProductService.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__MySQL=${MYSQL_CONNECTION_STRING}
+      - RabbitMQ_Host_Name=${RABBITMQ_HOST_NAME}
+      - RabbitMQ_User_Name=${RABBITMQ_USER_NAME}
+      - RabbitMQ_Password=${RABBITMQ_PASSWORD}
+      - RabbitMQ_Port=${RABBITMQ_PORT}
+      - RabbitMQ_Products_Exchange=${RABBITMQ_PRODUCT_EXCHANGE}
+    ports:
+      - "6001:8080"
+    restart: unless-stopped
+    networks:
+      - products-microservice-mysql-network
+      - microservice-network
+    depends_on:
+      - mysql
+      - rabbitmq
+  mysql:
+    image: microservices-mysql:latest
+    container_name: mysql
+    build:
+      context: .
+      dockerfile: ./dbs/mysql/Dockerfile
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init-db/mysql.sql:/docker-entrypoint-initdb.d/mysql.sql
+    restart: unless-stopped
+    networks:
+      - products-microservice-mysql-network
+  users-microservice:
+    image: users-microservice
+    container_name: users-microservice
+    build:
+      context: ./Microservices.UserService
+      dockerfile: UserService.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__PostgreSQL=${POSTGRESQL_CONNECTION_STRING}
+    ports:
+      - "5000:8080"
+    restart: unless-stopped
+    networks:
+      - users-microservice-postgres-network
+      - microservice-network
+    depends_on:
+      - postgres
+  postgres:
+    image: microservices-postgres:latest
+    container_name: postgres
+    build:
+      context: .
+      dockerfile: ./dbs/postgres/Dockerfile
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+      - ./init-db/postgres.sql:/docker-entrypoint-initdb.d/postgres.sql
+      - ./init-db/create-database-postgres.sql:/docker-entrypoint-initdb.d/create-database-postgres.sql
+    restart: unless-stopped
+    networks:
+      - users-microservice-postgres-network
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - microservice-network
+  api-gateway:
+    image: api-gateway
+    container_name: api-gateway
+    build:
+      context: ./Microservices.ApiGateway/ApiGateway
+      dockerfile: Dockerfile
+    ports:
+      - "4000:8080"
+    restart: unless-stopped
+    networks:
+      - microservice-network
+  rabbitmq:
+    image: rabbitmq:3.13.7-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    restart: unless-stopped
+    networks:
+      - microservice-network
+volumes:
+  mongo-data:
+  mysql-data:
+  pg-data:
+  redis-data:
+  rabbitmq-data:
+networks:
+  orders-microservice-mongodb-network:
+    driver: bridge
+  products-microservice-mysql-network:
+    driver: bridge
+  users-microservice-postgres-network:
+    driver: bridge
+  microservice-network:
+    driver: bridge
