@@ -1,0 +1,49 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-microservice-deployment
+  namespace: microservices-namespace
+  labels:
+    app: orders-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders-microservice
+  template:
+    metadata:
+      labels:
+        app: orders-microservice
+    spec:
+      containers:
+        - name: orders-microservice
+          image: harshaecommerceregistry.azurecr.io/orders-microservice:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+            - name: ConnectionStrings__MongoDB
+              value: mongodb://mongodb:27017
+            - name: UsersMicroservicePort
+              value: "8080"
+            - name: UsersMicroserviceName
+              value: api-gateway
+            - name: ProductsMicroservicePort
+              value: "8080"
+            - name: ProductsMicroserviceName
+              value: api-gateway
+            - name: ConnectionStrings__Redis
+              value: redis:6379
+            - name: RabbitMQ_Host_Name
+              value: rabbitmq
+            - name: RabbitMQ_Port
+              value: "5672"
+            - name: RabbitMQ_User_Name
+              value: guest
+            - name: RabbitMQ_Password
+              value: guest
+            - name: RabbitMQ_Products_Exchange
+              value: products.exchange
+            - name: RabbitMQ_Users_Exchange
+              value: users.exchange
