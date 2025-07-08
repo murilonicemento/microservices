@@ -1,0 +1,14 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+  namespace: microservices-namespace
+spec:
+  selector:
+    app: api-gateway
+  ports:
+    - protocol: TCP
+      port: 8080      # The port that will be exposed externally
+      targetPort: 8080  # The port on the api-gateway container
+  type: LoadBalancer  # Exposes the service externally using the Azure's load balancer
+  
