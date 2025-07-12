@@ -15,6 +15,7 @@ variables:
   containerRegistry: 'muriloecommerceregistry.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/ProductService.API/Dockerfile'
   tag: '$(Build.BuildId)'
+  windowsImageName: 'windows-latest'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -35,5 +36,46 @@ stages:
         repository: $(imageRepository)
         dockerfile: $(dockerfilePath)
         containerRegistry: $(dockerRegistryServiceConnection)
+        buildContext: $(Build.SourcesDirectory)
         tags: |
           $(tag)
+- stage: Test
+  displayName: Test and publish result stage
+  jobs:
+    - job: RunTest
+      displayName: Run unit tests
+      pool:
+        vmImage: $(windowsImageName)
+      steps:
+        - checkout: self
+          displayName: Checkout source code
+        - task: NuGetToolInstaller@1
+          displayName: Install NuGetTool
+        - task: UseDotNet@2
+          inputs:
+            packageType: 'sdk'
+            version: '9.0.300'
+            includePreviewVersions: true
+        - task: DotNetCoreCLI@2
+          inputs:
+            command: 'restore'
+            projects: '**/*.sln'
+        - task: MSBuild@1
+          displayName: Build Solution
+          inputs:
+            solution: '**/*.sln'
+            msbuildArchitecture: 'x64'
+            platform: 'Any CPU'
+            configuration: 'Release'
+            msbuildArguments: '/p:Configuration=Release'
+            restoreNugetPackages: true
+        - task: VSTest@3
+          displayName: Test Solution
+          inputs:
+            testSelector: 'testAssemblies'
+            testAssemblyVer2: |
+              **\bin\**\*ProductUnitTests.dll
+              **\bin\**\*tests.dll
+            searchFolder: '$(System.DefaultWorkingDirectory)'
+            runTestsInIsolation: true
+            codeCoverageEnabled: true
