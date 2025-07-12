@@ -3,79 +3,104 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
-- master
+  - dev
 
 resources:
-- repo: self
+  - repo: self
 
 variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '285d9556-5323-49e4-a933-34f613cd205e'
-  imageRepository: 'productsmicroservice'
+  imageRepository: 'products-microservice'
   containerRegistry: 'muriloecommerceregistry.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/ProductService.API/Dockerfile'
   tag: '$(Build.BuildId)'
   windowsImageName: 'windows-latest'
+  aksClusterName: 'ecommerce-aks-cluster'
+  aksServiceConnectionName: 'dev-ecommerce-aks-cluster-dev-1752351360344'
+  deploymentFile: '$(Build.SourcesDirectory)/k8s/deployment.yaml'
+  kubernetesNamespace: 'dev'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
 stages:
-- stage: Build
-  displayName: Build and push stage
-  jobs:
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        buildContext: $(Build.SourcesDirectory)
-        tags: |
-          $(tag)
-- stage: Test
-  displayName: Test and publish result stage
-  jobs:
-    - job: RunTest
-      displayName: Run unit tests
-      pool:
-        vmImage: $(windowsImageName)
-      steps:
-        - checkout: self
-          displayName: Checkout source code
-        - task: NuGetToolInstaller@1
-          displayName: Install NuGetTool
-        - task: UseDotNet@2
-          inputs:
-            packageType: 'sdk'
-            version: '9.0.300'
-            includePreviewVersions: true
-        - task: DotNetCoreCLI@2
-          inputs:
-            command: 'restore'
-            projects: '**/*.sln'
-        - task: MSBuild@1
-          displayName: Build Solution
-          inputs:
-            solution: '**/*.sln'
-            msbuildArchitecture: 'x64'
-            platform: 'Any CPU'
-            configuration: 'Release'
-            msbuildArguments: '/p:Configuration=Release'
-            restoreNugetPackages: true
-        - task: VSTest@3
-          displayName: Test Solution
-          inputs:
-            testSelector: 'testAssemblies'
-            testAssemblyVer2: |
-              **\bin\**\*ProductUnitTests.dll
-              **\bin\**\*tests.dll
-            searchFolder: '$(System.DefaultWorkingDirectory)'
-            runTestsInIsolation: true
-            codeCoverageEnabled: true
+  - stage: Build
+    displayName: Build and push stage
+    jobs:
+      - job: Build
+        displayName: Build
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: Docker@2
+            displayName: Build and push an image to container registry
+            inputs:
+              command: buildAndPush
+              repository: $(imageRepository)
+              dockerfile: $(dockerfilePath)
+              containerRegistry: $(dockerRegistryServiceConnection)
+              buildContext: $(Build.SourcesDirectory)
+              tags: |
+                $(tag)
+  - stage: Test
+    displayName: Test and publish result stage
+    jobs:
+      - job: RunTest
+        displayName: Run unit tests
+        pool:
+          vmImage: $(windowsImageName)
+        steps:
+          - checkout: self
+            displayName: Checkout source code
+          - task: UseDotNet@2
+            inputs:
+              packageType: 'sdk'
+              version: '9.0.300'
+              includePreviewVersions: true
+          - task: DotNetCoreCLI@2
+            displayName: Restore packages
+            inputs:
+              command: 'restore'
+              projects: '**/*.sln'
+          - task: DotNetCoreCLI@2
+            displayName: Build solution
+            inputs:
+              command: 'build'
+              projects: '**/*.sln'
+              arguments: '--configuration Release'
+          - task: DotNetCoreCLI@2
+            displayName: Run tests
+            inputs:
+              command: 'test'
+              projects: '**/*Tests.csproj'
+              arguments: '--configuration Release --collect:"Code Coverage"'
+  - stage: DeployToDev
+    displayName: Deploy to Dev
+    dependsOn: Test
+    condition: and(succeeded('Build'),  eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
+    jobs:
+      - deployment: DeploymentToDev
+        displayName: Deployment to Dev Environment
+        environment: dev
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  displayName: Checkout source code
+                - script: |
+                    echo "Listing content of k8s"
+                    ls -l $(Build.SourcesDirectory)/k8s/
+                  displayName: 'List files in k8s directory'
+                - script: |
+                    sed -i 's/__TAG__/$(tag)/g' $(deploymentFile)
+                  displayName: 'Replace image tag in deployment file'
+                - task: Kubernetes@1
+                  displayName: Deploy to dev namespace in kubernetes
+                  inputs:
+                    kubernetesServiceEndpoint: $(aksServiceConnectionName)
+                    kubernetesCluster: $(aksClusterName)
+                    namespace: $(kubernetesNamespace)
+                    command: apply
+                    arguments: '-f $(Build.SourcesDirectory)/k8s/.'
