@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Core", "Microse
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Infrastructure", "Microservices.UserService\UserService.Infrastructure\UserService.Infrastructure.csproj", "{AA5DE02E-53C9-409A-B1BB-202BF81AD451}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductUnitTests", "Microservices.ProductService\ProductUnitTests\ProductUnitTests.csproj", "{A5438D63-95B8-44BB-A557-D40A9430DD58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -161,6 +163,18 @@ Global
 		{AA5DE02E-53C9-409A-B1BB-202BF81AD451}.Release|x64.Build.0 = Release|Any CPU
 		{AA5DE02E-53C9-409A-B1BB-202BF81AD451}.Release|x86.ActiveCfg = Release|Any CPU
 		{AA5DE02E-53C9-409A-B1BB-202BF81AD451}.Release|x86.Build.0 = Release|Any CPU
+		{A5438D63-95B8-44BB-A557-D40A9430DD58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5438D63-95B8-44BB-A557-D40A9430DD58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5438D63-95B8-44BB-A557-D40A9430DD58}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A5438D63-95B8-44BB-A557-D40A9430DD58}.Debug|x64.Build.0 = Debug|Any CPU
+		{A5438D63-95B8-44BB-A557-D40A9430DD58}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A5438D63-95B8-44BB-A557-D40A9430DD58}.Debug|x86.Build.0 = Debug|Any CPU
+		{A5438D63-95B8-44BB-A557-D40A9430DD58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5438D63-95B8-44BB-A557-D40A9430DD58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5438D63-95B8-44BB-A557-D40A9430DD58}.Release|x64.ActiveCfg = Release|Any CPU
+		{A5438D63-95B8-44BB-A557-D40A9430DD58}.Release|x64.Build.0 = Release|Any CPU
+		{A5438D63-95B8-44BB-A557-D40A9430DD58}.Release|x86.ActiveCfg = Release|Any CPU
+		{A5438D63-95B8-44BB-A557-D40A9430DD58}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -176,5 +190,6 @@ Global
 		{FB0F3753-F610-4B4F-9E17-08F54238F59B} = {30DA48AA-857B-D6BB-5CB0-B112FF09C78C}
 		{1E013983-7051-4EDA-A769-95A530E50FBF} = {30DA48AA-857B-D6BB-5CB0-B112FF09C78C}
 		{AA5DE02E-53C9-409A-B1BB-202BF81AD451} = {30DA48AA-857B-D6BB-5CB0-B112FF09C78C}
+		{A5438D63-95B8-44BB-A557-D40A9430DD58} = {69980076-7C8B-9CC1-E0FE-77A9E6979BDE}
 	EndGlobalSection
 EndGlobal
