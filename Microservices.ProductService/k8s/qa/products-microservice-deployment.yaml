@@ -1,0 +1,42 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products-microservice-deployment
+  labels:
+    app: products-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: products-microservice
+  template:
+    metadata:
+      labels:
+        app: products-microservice
+    spec:
+      containers:
+        - name: products-microservice
+          image: muriloecommerceregistry.azurecr.io/products-microservice:__TAG__
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+            - name: ConnectionStrings__MySQL
+              value: "Server=mysql;Port=3306;Database=microservice_products;User ID=root;Password=guest"
+            - name: RabbitMQ_Host_Name
+              value: rabbitmq
+            - name: RabbitMQ_Port
+              value: "5672"
+            - name: RabbitMQ_User_Name
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-credentials
+                  key: RabbitMQ_User_Name
+            - name: RabbitMQ_Password
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-credentials
+                  key: RabbitMQ_Password
+            - name: RabbitMQ_Products_Exchange
+              value: products.exchange
