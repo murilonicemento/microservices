@@ -2,7 +2,6 @@
 kind: Service
 metadata:
   name: redis
-  namespace: microservices-namespace
 spec:
   selector:
     app: redis

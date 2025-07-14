@@ -2,7 +2,6 @@
 kind: Deployment
 metadata:
   name: redis-deployment
-  namespace: microservices-namespace
   labels:
     app: redis
 spec:

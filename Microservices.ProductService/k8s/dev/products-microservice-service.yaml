@@ -2,7 +2,6 @@
 kind: Service
 metadata:
   name: products-microservice
-  namespace: microservices-namespace
 spec:
   selector:
     app: products-microservice

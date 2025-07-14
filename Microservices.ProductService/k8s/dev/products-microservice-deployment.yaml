@@ -2,7 +2,6 @@
 kind: Deployment
 metadata:
   name: products-microservice-deployment
-  namespace: microservices-namespace
   labels:
     app: products-microservice
 spec:

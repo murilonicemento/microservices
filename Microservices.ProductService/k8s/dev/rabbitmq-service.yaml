@@ -2,7 +2,6 @@
 kind: Service
 metadata:
   name: rabbitmq
-  namespace: microservices-namespace
 spec:
   selector:
     app: rabbitmq

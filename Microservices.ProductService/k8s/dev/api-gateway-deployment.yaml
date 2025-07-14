@@ -2,7 +2,6 @@
 kind: Deployment
 metadata:
   name: api-gateway-deployment
-  namespace: microservices-namespace
   labels:
     app: api-gateway
 spec:

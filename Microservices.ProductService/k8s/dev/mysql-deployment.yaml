@@ -2,7 +2,6 @@
 kind: Deployment
 metadata:
   name: mysql-deployment
-  namespace: microservices-namespace
   labels:
     app: mysql
 spec:

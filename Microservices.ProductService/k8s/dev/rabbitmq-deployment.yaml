@@ -2,7 +2,6 @@
 kind: Deployment
 metadata:
   name: rabbitmq-deployment
-  namespace: microservices-namespace
   labels:
     app: rabbitmq
 spec:
