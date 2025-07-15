@@ -29,8 +29,25 @@ variables:
   uatKubernetesNamespace: 'uat'
   stagingKubernetesNamespace: 'staging'
   prodKubernetesNamespace: 'prod'
+  resourceGroupServiceConnection: 'ecommerce-resource-group-connection'
+  keyVaultName: 'products-microservice-kv'
 
 stages:
+  - stage: InitializeKeyVault
+    displayName: Initialize Key Vault
+    jobs:
+      - job: FetchSecrets
+        displayName: Fetch Key Vault Secrets
+        pool:
+          vmImage: $(linuxImageName)
+        steps:
+          - task: AzureKeyVault@2
+            displayName: Fetch Key Vault Secrets
+            inputs:
+              azureSubscription: $(resourceGroupServiceConnection)
+              keyVaultName: $(keyVaultName)
+              SecretsFilter: '*'
+              RunAsPreJob: true
   - stage: Build
     displayName: Build and push stage
     jobs:

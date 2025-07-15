@@ -236,4 +236,3 @@ stages:
                     namespace: $(kubernetesNamespace)
                     command: apply
                     arguments: '-f $(Build.SourcesDirectory)/k8s/prod/.'
-                    
