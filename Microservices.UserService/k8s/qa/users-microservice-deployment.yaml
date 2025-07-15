@@ -1,0 +1,26 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-microservice-deployment
+  labels:
+    app: users-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users-microservice
+  template:
+    metadata:
+      labels:
+        app: users-microservice
+    spec:
+      containers:
+        - name: users-microservice
+          image: muriloecommerceregistry.azurecr.io/users-microservice:__TAG__
+          ports:
+            - containerPort: 9090
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+            - name: ConnectionStrings__PostgreSQL
+              value: "Host=postgres;Port=5432;Database=microservices_users;User Id=postgres;Password=admin"
