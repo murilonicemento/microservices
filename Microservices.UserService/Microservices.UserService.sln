@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservices.API", "Microservices.API\Microservices.API.csproj", "{19B60405-958E-4126-BDC9-72EB4F3BAB59}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.API", "UserService.API\UserService.API.csproj", "{19B60405-958E-4126-BDC9-72EB4F3BAB59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservices.Infrastructure", "Microservices.Infrastructure\Microservices.Infrastructure.csproj", "{1CA9433F-7E06-40AD-9674-364DC39E0DCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Infrastructure", "UserService.Infrastructure\UserService.Infrastructure.csproj", "{1CA9433F-7E06-40AD-9674-364DC39E0DCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservices.Core", "Microservices.Core\Microservices.Core.csproj", "{41554226-C188-4B5A-8D7A-58DFB3C536E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Core", "UserService.Core\UserService.Core.csproj", "{41554226-C188-4B5A-8D7A-58DFB3C536E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1118B706-8D3B-4C0A-AD3B-1D2B1ED00756}"
 	ProjectSection(SolutionItems) = preProject
