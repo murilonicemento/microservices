@@ -45,7 +45,6 @@ stages:
               repository: $(imageRepository)
               dockerfile: $(dockerfilePath)
               containerRegistry: $(dockerRegistryServiceConnection)
-              buildContext: $(Build.SourcesDirectory)
               tags: |
                 $(tag)
   - stage: Test
@@ -235,3 +234,4 @@ stages:
                     namespace: $(kubernetesNamespace)
                     command: apply
                     arguments: '-f $(Build.SourcesDirectory)/k8s/prod/.'
+                    
