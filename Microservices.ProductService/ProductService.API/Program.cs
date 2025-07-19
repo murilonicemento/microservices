@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Services.AddDataAccessLayer(configuration);
-builder.Services.AddBusinessLogicLayer();
+builder.Services.AddBusinessLogicLayer(configuration);
 
 builder.Services.AddControllers();
 

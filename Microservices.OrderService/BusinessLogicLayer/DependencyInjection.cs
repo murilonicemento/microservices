@@ -1,4 +1,5 @@
-﻿using BusinessLogicLayer.Mappers;
+﻿using Azure.Messaging.ServiceBus;
+using BusinessLogicLayer.Mappers;
 using BusinessLogicLayer.MessageBroker;
 using BusinessLogicLayer.MessageBroker.Contracts;
 using BusinessLogicLayer.MessageBroker.HostedServices;
@@ -31,11 +32,23 @@ public static class DependencyInjection
         services.AddAutoMapper(typeof(OrderUpdateRequestToOrderMappingProfile).Assembly);
 
         services.AddScoped<IOrderService, OrderService>();
+
         services.AddTransient<IMessageUpdateMessageConsumer, RabbitMQProductNameUpdateConsumer>();
         services.AddTransient<IMessageDeletionConsumer, RabbitMQProductDeletionConsumer>();
 
+        services.AddSingleton(_ =>
+        {
+            var connectionString = configuration.GetConnectionString("AzureServiceBus");
+
+            return new ServiceBusClient(connectionString);
+        });
+        services.AddSingleton<IServiceBusProductUpdateConsumer, ServiceBusProductUpdateConsumer>();
+        services.AddSingleton<IServiceBusProductDeletionConsumer, ServiceBusProductDeletionConsumer>();
+
         services.AddHostedService<ProductNameUpdateHostedService>();
         services.AddHostedService<ProductDeletionMessageHostedService>();
+        services.AddHostedService<ServiceBusProductUpdateHostedService>();
+        services.AddHostedService<ServiceBusProductDeletionHostedService>();
 
         services.AddStackExchangeRedisCache(options =>
         {
